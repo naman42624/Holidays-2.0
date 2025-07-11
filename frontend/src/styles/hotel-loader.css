@@ -1,0 +1,135 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:700);
+
+@keyframes flicker {
+  0% {
+    background: transparent;
+  }
+  50% {
+    background: white;
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+@keyframes neon {
+  0% {
+    text-shadow: none;
+  }
+  50% {
+    text-shadow: rgba(255, 255, 255, 0.8) 0 0 8px;
+  }
+  100% {
+    text-shadow: none;
+  }
+}
+
+.hotel-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: white;
+  font-family: 'Lato', sans-serif;
+  font-size: 24px;
+}
+
+.hotel-loader {
+  padding: 0.5em;
+  width: 5.5em;
+  height: 9.5em;
+  margin: 50px auto 20px;
+  background: #444444;
+  position: relative;
+  box-shadow: #333333 0 0 20px inset;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.hotel-loader .hotel-sign {
+  padding: 0.25em 0;
+  position: absolute;
+  right: -1.5em;
+  width: 1.3em;
+  text-align: center;
+  background: #444444;
+  font-family: sans-serif;
+  font-weight: 700;
+  border-radius: 4px;
+  box-shadow: #333333 0 0 10px inset;
+  animation: neon 3s infinite ease;
+}
+
+.hotel-loader .hotel-sign span {
+  line-height: 1;
+  display: block;
+}
+
+.hotel-loader .window {
+  background: white;
+  width: 0.5em;
+  height: 1em;
+  float: left;
+  margin: 0 0.5em 0.5em 0;
+  border-radius: 2px;
+  animation: flicker 1s infinite ease;
+  box-sizing: border-box;
+}
+
+.hotel-loader .window:nth-of-type(5n) {
+  margin: 0 0 0.5em 0;
+}
+
+/* Animation delays for windows */
+.hotel-loader .window:nth-child(1) { animation-delay: 0.5s; animation-duration: 0.5s; }
+.hotel-loader .window:nth-child(2) { animation-delay: 1s; animation-duration: 1s; }
+.hotel-loader .window:nth-child(3) { animation-delay: 1.5s; animation-duration: 1.5s; }
+.hotel-loader .window:nth-child(4) { animation-delay: 2s; animation-duration: 2s; }
+.hotel-loader .window:nth-child(5) { animation-delay: 2.5s; animation-duration: 2.5s; }
+.hotel-loader .window:nth-child(6) { animation-delay: 1.25s; animation-duration: 1.25s; }
+.hotel-loader .window:nth-child(7) { animation-delay: 1.75s; animation-duration: 1.75s; }
+.hotel-loader .window:nth-child(8) { animation-delay: 2.25s; animation-duration: 2.25s; }
+.hotel-loader .window:nth-child(9) { animation-delay: 2.75s; animation-duration: 2.75s; }
+.hotel-loader .window:nth-child(10) { animation-delay: 3.25s; animation-duration: 3.25s; }
+
+.hotel-loader .window:nth-child(11) { animation-delay: 1.1s; animation-duration: 1.1s; }
+.hotel-loader .window:nth-child(12) { animation-delay: 1.2s; animation-duration: 1.2s; }
+.hotel-loader .window:nth-child(13) { animation-delay: 1.3s; animation-duration: 1.3s; }
+.hotel-loader .window:nth-child(14) { animation-delay: 1.4s; animation-duration: 1.4s; }
+.hotel-loader .window:nth-child(15) { animation-delay: 1.5s; animation-duration: 1.5s; }
+.hotel-loader .window:nth-child(16) { animation-delay: 1.6s; animation-duration: 1.6s; }
+.hotel-loader .window:nth-child(17) { animation-delay: 1.7s; animation-duration: 1.7s; }
+.hotel-loader .window:nth-child(18) { animation-delay: 1.8s; animation-duration: 1.8s; }
+.hotel-loader .window:nth-child(19) { animation-delay: 1.9s; animation-duration: 1.9s; }
+.hotel-loader .window:nth-child(20) { animation-delay: 2.0s; animation-duration: 2.0s; }
+
+.hotel-loader .window:nth-child(21) { animation-delay: 1.4s; animation-duration: 1.75s; }
+.hotel-loader .window:nth-child(22) { animation-delay: 1.47s; animation-duration: 1.83s; }
+.hotel-loader .window:nth-child(23) { animation-delay: 1.53s; animation-duration: 1.92s; }
+.hotel-loader .window:nth-child(24) { animation-delay: 1.6s; animation-duration: 2.0s; }
+.hotel-loader .window:nth-child(25) { animation-delay: 1.67s; animation-duration: 2.08s; }
+
+.hotel-loader .door {
+  background: white;
+  position: absolute;
+  bottom: 0;
+  width: 1em;
+  height: 1.5em;
+  left: 50%;
+  margin-left: -0.5em;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.hotel-loader-text {
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+  margin-top: 20px;
+}
+
+.hotel-loader-location {
+  font-weight: bold;
+  color: #444;
+}

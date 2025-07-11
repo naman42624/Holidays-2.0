@@ -1,0 +1,496 @@
+'use client'
+
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { format, addDays } from 'date-fns'
+import { Hotel, Location, ApiResponse } from '@/types'
+import api, { endpoints } from '@/lib/api'
+import { formatCurrency, formatDate } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Building, MapPin, Calendar, Users, Search, Loader2, Star, Wifi, Car, Coffee, Dumbbell } from 'lucide-react'
+
+const hotelSearchSchema = z.object({
+  destination: z.string().min(3, 'Destination is required'),
+  checkIn: z.string().min(1, 'Check-in date is required'),
+  checkOut: z.string().min(1, 'Check-out date is required'),
+  adults: z.number().min(1, 'At least 1 adult required').max(9, 'Maximum 9 adults'),
+  children: z.number().min(0).max(9, 'Maximum 9 children'),
+  rooms: z.number().min(1, 'At least 1 room required').max(5, 'Maximum 5 rooms')
+}).refine((data) => {
+  const checkIn = new Date(data.checkIn)
+  const checkOut = new Date(data.checkOut)
+  return checkOut > checkIn
+}, {
+  message: "Check-out date must be after check-in date",
+  path: ["checkOut"]
+})
+
+type HotelSearchFormData = z.infer<typeof hotelSearchSchema>
+
+export default function HotelsPage() {
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchError, setSearchError] = useState('')
+  const [hotels, setHotels] = useState<Hotel[]>([])
+  const [locationSuggestions, setLocationSuggestions] = useState<Location[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  
+  // Filter state for hotels
+  const [priceFilter, setPriceFilter] = useState(20000)
+  const [ratingFilter, setRatingFilter] = useState(0)
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors }
+  } = useForm<HotelSearchFormData>({
+    resolver: zodResolver(hotelSearchSchema),
+    defaultValues: {
+      adults: 2,
+      children: 0,
+      rooms: 1,
+      checkIn: format(addDays(new Date(), 1), 'yyyy-MM-dd'),
+      checkOut: format(addDays(new Date(), 3), 'yyyy-MM-dd')
+    }
+  })
+
+  // Location search function
+  const searchLocations = async (keyword: string) => {
+    if (keyword.length < 2) return
+
+    try {
+      const response = await api.get(`${endpoints.locations.search}?keyword=${encodeURIComponent(keyword)}&subType=CITY&limit=5`)
+      const data: ApiResponse<Location[]> = response.data
+      
+      if (data.success && data.data) {
+        setLocationSuggestions(data.data)
+      }
+    } catch (error) {
+      console.error('Location search error:', error)
+    }
+  }
+
+  // Handle destination input change
+  const handleDestinationChange = (value: string) => {
+    setValue('destination', value)
+    setShowSuggestions(true)
+    searchLocations(value)
+  }
+
+  // Select location from suggestions
+  const selectLocation = (location: Location) => {
+    setValue('destination', `${location.city}, ${location.country}`)
+    setShowSuggestions(false)
+  }
+
+  // Search hotels
+  const onSubmit = async (data: HotelSearchFormData) => {
+    setIsSearching(true)
+    setSearchError('')
+    setHotels([])
+
+    try {
+      // Extract city code from the destination
+      const extractCityCode = (destinationString: string) => {
+        // Try to find a matching location from suggestions first
+        const matchingLocation = locationSuggestions.find(loc => 
+          destinationString.includes(loc.city)
+        )
+        if (matchingLocation) {
+          return matchingLocation.cityCode
+        }
+        // Fallback: use the first 3 characters as city code
+        return destinationString.split(',')[0].trim().slice(0, 3).toUpperCase()
+      }
+
+      const searchParams = {
+        cityCode: extractCityCode(data.destination),
+        checkInDate: data.checkIn,
+        checkOutDate: data.checkOut,
+        adults: data.adults,
+        ...(data.children > 0 && { children: data.children }),
+        rooms: data.rooms,
+        currency: 'INR'
+      }
+
+      const response = await api.get(endpoints.hotels.search, { params: searchParams })
+      const apiResponse: ApiResponse<Hotel[]> = response.data
+
+      if (apiResponse.success && apiResponse.data) {
+        setHotels(apiResponse.data)
+      } else {
+        setSearchError(apiResponse.error || 'No hotels found')
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : (error as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed to search hotels'
+      setSearchError(errorMessage)
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  const renderStars = (rating?: number) => {
+    if (!rating) return null
+    
+    return (
+      <div className="flex">
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            className={`w-4 h-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+          />
+        ))}
+      </div>
+    )
+  }
+
+  const getAmenityIcon = (amenity: string) => {
+    const amenityLower = amenity.toLowerCase()
+    if (amenityLower.includes('wifi') || amenityLower.includes('internet')) return <Wifi className="w-4 h-4" />
+    if (amenityLower.includes('parking') || amenityLower.includes('car')) return <Car className="w-4 h-4" />
+    if (amenityLower.includes('restaurant') || amenityLower.includes('dining')) return <Coffee className="w-4 h-4" />
+    if (amenityLower.includes('fitness') || amenityLower.includes('gym')) return <Dumbbell className="w-4 h-4" />
+    return null
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            Search Hotels
+          </h1>
+          <p className="text-xl text-gray-600">
+            Find the perfect place to stay for your trip
+          </p>
+        </div>
+
+        {/* Search Form */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Building className="w-6 h-6 mr-2" />
+              Hotel Search
+            </CardTitle>
+            <CardDescription>Enter your travel details to find available hotels</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              {/* Destination Field */}
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <MapPin className="w-4 h-4 inline mr-1" />
+                  Destination
+                </label>
+                <Input
+                  placeholder="City or destination"
+                  {...register('destination')}
+                  onChange={(e) => handleDestinationChange(e.target.value)}
+                />
+                {errors.destination && (
+                  <p className="mt-1 text-sm text-red-600">{errors.destination.message}</p>
+                )}
+
+                {/* Location Suggestions */}
+                {showSuggestions && locationSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 z-10 bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+                    {locationSuggestions.map((location) => (
+                      <button
+                        key={location.id}
+                        type="button"
+                        className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center"
+                        onClick={() => selectLocation(location)}
+                      >
+                        <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+                        <div>
+                          <div className="font-medium">{location.city}, {location.country}</div>
+                          <div className="text-sm text-gray-500">{location.detailedName}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Date Fields */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Calendar className="w-4 h-4 inline mr-1" />
+                    Check-in Date
+                  </label>
+                  <Input
+                    type="date"
+                    {...register('checkIn')}
+                  />
+                  {errors.checkIn && (
+                    <p className="mt-1 text-sm text-red-600">{errors.checkIn.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Calendar className="w-4 h-4 inline mr-1" />
+                    Check-out Date
+                  </label>
+                  <Input
+                    type="date"
+                    {...register('checkOut')}
+                  />
+                  {errors.checkOut && (
+                    <p className="mt-1 text-sm text-red-600">{errors.checkOut.message}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Guests and Rooms */}
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Users className="w-4 h-4 inline mr-1" />
+                    Adults
+                  </label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="9"
+                    {...register('adults', { valueAsNumber: true })}
+                  />
+                  {errors.adults && (
+                    <p className="mt-1 text-sm text-red-600">{errors.adults.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Children
+                  </label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="9"
+                    {...register('children', { valueAsNumber: true })}
+                  />
+                  {errors.children && (
+                    <p className="mt-1 text-sm text-red-600">{errors.children.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Rooms
+                  </label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="5"
+                    {...register('rooms', { valueAsNumber: true })}
+                  />
+                  {errors.rooms && (
+                    <p className="mt-1 text-sm text-red-600">{errors.rooms.message}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Search Button */}
+              <Button
+                type="submit"
+                disabled={isSearching}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                {isSearching ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Searching Hotels...
+                  </>
+                ) : (
+                  <>
+                    <Search className="w-4 h-4 mr-2" />
+                    Search Hotels
+                  </>
+                )}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Search Error */}
+        {searchError && (
+          <Card className="mb-8 border-red-200 bg-red-50">
+            <CardContent className="p-4">
+              <p className="text-red-600 text-center">{searchError}</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Search Results */}
+        {hotels.length > 0 && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Found {hotels.filter(hotel => {
+                const price = hotel.offers?.[0]?.price?.total ? parseFloat(hotel.offers[0].price.total) : 0;
+                return price <= priceFilter && (ratingFilter === 0 || (hotel.rating && hotel.rating >= ratingFilter));
+              }).length} Hotels
+            </h2>
+
+            {/* Simple Filters */}
+            {hotels.length > 0 && (
+              <div className="flex flex-wrap gap-4 p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Max Price: ₹{priceFilter.toLocaleString()}
+                  </label>
+                  <input
+                    type="range"
+                    min="1000"
+                    max="50000"
+                    step="1000"
+                    value={priceFilter}
+                    onChange={(e) => setPriceFilter(parseInt(e.target.value))}
+                    className="w-32"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm font-medium text-gray-700">Min Rating:</label>
+                  <select
+                    value={ratingFilter}
+                    onChange={(e) => setRatingFilter(parseInt(e.target.value))}
+                    className="px-2 py-1 border border-gray-300 rounded text-sm"
+                  >
+                    <option value="0">Any</option>
+                    <option value="3">3+</option>
+                    <option value="4">4+</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+                <button
+                  onClick={() => { setPriceFilter(20000); setRatingFilter(0); }}
+                  className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                >
+                  Clear
+                </button>
+              </div>
+            )}
+
+            <div className="grid gap-6">
+              {hotels.filter(hotel => {
+                const price = hotel.offers?.[0]?.price?.total ? parseFloat(hotel.offers[0].price.total) : 0;
+                return price <= priceFilter && (ratingFilter === 0 || (hotel.rating && hotel.rating >= ratingFilter));
+              }).map((hotel) => (
+                <Card key={hotel.hotelId} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="text-xl font-bold text-gray-900">{hotel.name}</h3>
+                          {hotel.rating && renderStars(hotel.rating)}
+                        </div>
+
+                        <div className="flex items-center text-gray-600 mb-3">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          <span className="text-sm">
+                            {hotel.address.lines.join(', ')}, {hotel.address.cityName}
+                          </span>
+                        </div>
+
+                        {hotel.description && (
+                          <p className="text-gray-600 mb-4 line-clamp-2">{hotel.description}</p>
+                        )}
+
+                        {/* Amenities */}
+                        {hotel.amenities && hotel.amenities.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {hotel.amenities.slice(0, 4).map((amenity, index) => (
+                              <div key={index} className="flex items-center px-2 py-1 bg-gray-100 rounded-md text-sm text-gray-600">
+                                {getAmenityIcon(amenity)}
+                                <span className="ml-1">{amenity}</span>
+                              </div>
+                            ))}
+                            {hotel.amenities.length > 4 && (
+                              <div className="px-2 py-1 bg-gray-100 rounded-md text-sm text-gray-600">
+                                +{hotel.amenities.length - 4} more
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Hotel Offers */}
+                      <div className="lg:ml-6 lg:min-w-[300px]">
+                        {hotel.offers && hotel.offers.length > 0 ? (
+                          <div className="space-y-3">
+                            {hotel.offers.slice(0, 3).map((offer) => (
+                              <Card key={offer.id} className="border border-gray-200">
+                                <CardContent className="p-4">
+                                  <div className="flex justify-between items-start mb-2">
+                                    <div>
+                                      <p className="font-medium text-gray-900">{offer.room.type}</p>
+                                      <p className="text-sm text-gray-600">
+                                        {offer.room.typeEstimated.beds} {offer.room.typeEstimated.bedType}
+                                      </p>
+                                    </div>
+                                    <div className="text-right">
+                                      <p className="text-2xl font-bold text-blue-600">
+                                        {formatCurrency(parseFloat(offer.price.total), offer.price.currency)}
+                                      </p>
+                                      <p className="text-sm text-gray-500">per night</p>
+                                    </div>
+                                  </div>
+                                  
+                                  <div className="text-sm text-gray-600 mb-3">
+                                    <p>{formatDate(offer.checkInDate)} - {formatDate(offer.checkOutDate)}</p>
+                                    <p>{offer.roomQuantity} room{offer.roomQuantity > 1 ? 's' : ''}</p>
+                                  </div>
+
+                                  <Button 
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                                    size="sm"
+                                  >
+                                    Select Room
+                                  </Button>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
+                        ) : (
+                          <Card className="border border-gray-200">
+                            <CardContent className="p-4 text-center">
+                              <p className="text-gray-600 mb-2">No rooms available</p>
+                              <p className="text-sm text-gray-500">for selected dates</p>
+                            </CardContent>
+                          </Card>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* No Results */}
+        {!isSearching && hotels.length === 0 && !searchError && (
+          <Card className="text-center py-12">
+            <CardContent>
+              <Building className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Search for Hotels
+              </h3>
+              <p className="text-gray-600">
+                Enter your destination and travel dates to find available hotels
+              </p>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  )
+}

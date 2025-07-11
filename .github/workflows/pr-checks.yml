@@ -1,0 +1,148 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # Code Quality Checks
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies - Frontend
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Install dependencies - Backend
+        run: |
+          cd backend
+          npm ci
+
+      - name: Run Prettier check - Frontend
+        run: |
+          cd frontend
+          npx prettier --check "src/**/*.{ts,tsx,js,jsx,json,css,md}"
+
+      - name: Run Prettier check - Backend
+        run: |
+          cd backend
+          npx prettier --check "src/**/*.{ts,js,json,md}"
+
+      - name: Run ESLint - Frontend
+        run: |
+          cd frontend
+          npm run lint
+
+      - name: Run ESLint - Backend
+        run: |
+          cd backend
+          npm run lint
+
+  # Unit Tests
+  unit-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install and test Frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run test:ci
+
+      - name: Install and test Backend
+        run: |
+          cd backend
+          npm ci
+          npm run test
+
+  # Build Test
+  build-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      - name: Build Backend
+        run: |
+          cd backend
+          npm ci
+          npm run build
+
+  # Security Scan
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run npm audit
+        run: |
+          cd frontend && npm audit --audit-level=moderate || true
+          cd ../backend && npm audit --audit-level=moderate || true
+
+      - name: Run CodeQL Analysis
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript, typescript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+  # Dependency Check
+  dependency-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for outdated dependencies
+        run: |
+          cd frontend
+          npm outdated || true
+          cd ../backend
+          npm outdated || true
+
+      - name: Check for vulnerable dependencies
+        run: |
+          cd frontend
+          npx audit-ci --config .audit-ci.json || true
+          cd ../backend
+          npx audit-ci --config .audit-ci.json || true
