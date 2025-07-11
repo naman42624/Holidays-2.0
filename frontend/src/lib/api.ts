@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { FlightBookingRequest, BookingConfirmation } from '@/types'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+const API_BASE_URL = 'https://holidays-2-0.onrender.com/api'
 
 console.log('API Base URL:', API_BASE_URL)
 
