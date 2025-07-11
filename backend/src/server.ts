@@ -47,9 +47,41 @@ app.use(compression());
 app.use(morgan('combined'));
 app.use(requestLogger);
 
+
+const allowedOrigins = process.env.FRONTEND_URLS 
+  ? process.env.FRONTEND_URLS.split(',').map(url => url.trim())
+  : ['http://localhost:3000'];
+
+// Helper function to check if origin is allowed (supports wildcards)
+const isOriginAllowed = (origin: string): boolean => {
+  return allowedOrigins.some(allowed => {
+    // Exact match
+    if (allowed === origin) return true;
+    
+    // Wildcard subdomain support (e.g., *.vercel.app)
+    if (allowed.includes('*.')) {
+      const pattern = allowed.replace(/\*/g, '.*');
+      const regex = new RegExp(`^${pattern}$`);
+      return regex.test(origin);
+    }
+    
+    return false;
+  });
+};
+
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (isOriginAllowed(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
