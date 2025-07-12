@@ -59,16 +59,16 @@ export default function HotelConfirmationPage() {
       const { hotel, searchForm, guests, contact, specialRequests } = bookingData
       const offer = hotel.offers?.[0]
       
-      // Prepare booking data for API
+      // Prepare booking data for API - matching backend structure
       const bookingRequest = {
-        hotel: {
+        hotelData: {
           hotelId: hotel.hotelId,
           name: hotel.name,
           address: {
             street: hotel.address?.lines?.[0] || '',
             city: hotel.address?.cityName || '',
             country: hotel.address?.countryCode || '',
-            postalCode: '', // Not available in current hotel type
+            postalCode: '',
           },
           checkIn: searchForm.checkIn,
           checkOut: searchForm.checkOut,
@@ -80,7 +80,6 @@ export default function HotelConfirmationPage() {
             price: parseFloat(offer?.price?.total || '0'),
           }],
         },
-        searchForm: searchForm,
         guests: guests.map(guest => ({
           title: guest.title,
           firstName: guest.firstName,
@@ -89,7 +88,27 @@ export default function HotelConfirmationPage() {
           phone: guest.phone,
           isMainGuest: guest.type === 'PRIMARY',
         })),
-        contact: contact,
+        contact: {
+          title: 'Mr', // Default title
+          firstName: contact.firstName,
+          lastName: contact.lastName,
+          email: contact.email,
+          phone: contact.phone,
+          alternatePhone: '',
+          address: {
+            street: contact.address?.street || '',
+            city: contact.address?.city || '',
+            country: contact.address?.country || '',
+            postalCode: contact.address?.postalCode || '',
+          },
+        },
+        pricing: {
+          basePrice: parseFloat(offer?.price?.total || '0'),
+          taxes: 0,
+          totalPrice: parseFloat(offer?.price?.total || '0'),
+          currency: offer?.price?.currency || 'USD',
+          finalPrice: parseFloat(offer?.price?.total || '0'),
+        },
         specialRequests: specialRequests || undefined,
       }
       
@@ -116,8 +135,22 @@ export default function HotelConfirmationPage() {
       
     } catch (error) {
       console.error('Error submitting hotel booking:', error)
-      // Show error message to user
-      alert('There was an error submitting your hotel booking. Please try again.')
+      
+      // Show detailed error message
+      let errorMessage = 'There was an error submitting your hotel booking. Please try again.'
+      
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'object' && error !== null) {
+        const errorObj = error as { response?: { data?: { error?: string } }; message?: string }
+        if (errorObj.response?.data?.error) {
+          errorMessage = errorObj.response.data.error
+        } else if (errorObj.message) {
+          errorMessage = errorObj.message
+        }
+      }
+      
+      alert(`Hotel booking failed: ${errorMessage}`)
     } finally {
       setIsSubmitting(false)
     }

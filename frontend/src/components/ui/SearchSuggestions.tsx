@@ -83,9 +83,9 @@ export default function SearchSuggestions({
 
   const getIcon = (location: Location) => {
     if (location.type === 'AIRPORT' || location.iataCode) {
-      return <Plane className="w-4 h-4 text-blue-500" />
+      return <Plane className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500" />
     }
-    return <MapPin className="w-4 h-4 text-gray-500" />
+    return <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
   }
 
   const getLocationTypeBadge = (location: Location) => {
@@ -121,12 +121,12 @@ export default function SearchSuggestions({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
           transition={{ duration: 0.2, ease: 'easeOut' }}
-          className={`absolute top-full left-0 right-0 bg-white border-2 border-gray-200 rounded-xl shadow-xl z-50 max-h-96 overflow-y-auto mt-2 min-w-[500px] ${className}`}
+          className={`absolute top-full left-0 right-0 bg-white border-2 border-gray-200 rounded-xl shadow-xl z-50 max-h-96 overflow-y-auto mt-2 min-w-[300px] sm:min-w-[500px] ${className}`}
         >
           {/* Header */}
           <div className="flex items-center justify-between p-3 border-b border-gray-100 bg-gray-50">
             <div className="flex items-center space-x-2">
-              <Search className="w-4 h-4 text-gray-500" />
+              <Search className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
               <span className="text-sm font-medium text-gray-700">
                 {suggestions.length} suggestion{suggestions.length !== 1 ? 's' : ''} found
               </span>
@@ -136,7 +136,7 @@ export default function SearchSuggestions({
               onClick={onClose}
               className="p-1 hover:bg-gray-200 rounded transition-colors"
             >
-              <X className="w-4 h-4 text-gray-500" />
+              <X className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
             </button>
           </div>
 

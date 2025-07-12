@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { FlightBookingRequest, BookingConfirmation } from '@/types'
+import { FlightBookingRequest, BookingConfirmation, FlightOffer } from '@/types'
 
 const API_BASE_URL = 'https://plankton-app-exkyh.ondigitalocean.app/api'
 
@@ -155,14 +155,49 @@ export const bookingApi = {
   // Create flight booking
   createFlightBooking: async (bookingData: FlightBookingRequest): Promise<BookingConfirmation> => {
     const response = await api.post(endpoints.bookings.flight, bookingData);
-    return response.data.data;
+    const booking = response.data.data;
+    
+    // Map backend response to frontend BookingConfirmation interface
+    return {
+      bookingId: booking._id || booking.id,
+      pnr: booking.bookingReference || `BK${Date.now()}`,
+      status: booking.status || 'PENDING',
+      totalAmount: booking.pricing?.finalPrice || 0,
+      currency: booking.pricing?.currency || 'USD',
+      bookingDate: booking.createdAt || new Date().toISOString(),
+      flightDetails: bookingData.flightData.flightOffers[0],
+      passengers: bookingData.passengers,
+      contact: bookingData.contact,
+      extras: undefined // FlightBookingRequest doesn't have extras field
+    };
   },
 
   // Create hotel booking
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createHotelBooking: async (bookingData: { hotel: any; searchForm: any; guests: any; contact: any; specialRequests?: string }): Promise<BookingConfirmation> => {
+  createHotelBooking: async (bookingData: any): Promise<BookingConfirmation> => {
     const response = await api.post(endpoints.bookings.hotel, bookingData);
-    return response.data.data;
+    const booking = response.data.data;
+    
+    // Map backend response to frontend BookingConfirmation interface
+    return {
+      bookingId: booking._id || booking.id,
+      pnr: booking.bookingReference || `HB${Date.now()}`,
+      status: booking.status || 'PENDING',
+      totalAmount: booking.pricing?.finalPrice || 0,
+      currency: booking.pricing?.currency || 'USD',
+      bookingDate: booking.createdAt || new Date().toISOString(),
+      flightDetails: null as unknown as FlightOffer, // Hotel booking doesn't have flight details
+      passengers: bookingData.guests.map((guest: { title: string; firstName: string; lastName: string; email?: string; phone?: string; dateOfBirth?: string; nationality?: string; passportNumber?: string }) => ({
+        ...guest,
+        dateOfBirth: guest.dateOfBirth || '',
+        nationality: guest.nationality || '',
+        passportNumber: guest.passportNumber || '',
+        email: guest.email || bookingData.contact.email,
+        phone: guest.phone || bookingData.contact.phone
+      })),
+      contact: bookingData.contact,
+      extras: undefined
+    };
   },
 
   // Get booking by ID

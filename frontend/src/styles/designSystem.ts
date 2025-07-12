@@ -1,6 +1,6 @@
 // Design System Configuration
 export const colors = {
-  // Primary Brand Colors
+  // Primary Brand Colors (Blue - unified color scheme)
   primary: {
     50: '#eff6ff',
     100: '#dbeafe',
@@ -42,9 +42,9 @@ export const colors = {
     900: '#14532d',
   },
   
-  // Warning Colors
+  // Warning Colors (Keep yellow for warnings but use blue for primary actions)
   warning: {
-    50: '#fffbeb',
+    50: '#fefce8',
     100: '#fef3c7',
     200: '#fde68a',
     300: '#fcd34d',
@@ -54,6 +54,20 @@ export const colors = {
     700: '#b45309',
     800: '#92400e',
     900: '#78350f',
+  },
+  
+  // Accent Colors (Using primary blue shades for consistency)
+  accent: {
+    50: '#f0f9ff',
+    100: '#e0f2fe',
+    200: '#bae6fd',
+    300: '#7dd3fc',
+    400: '#38bdf8',
+    500: '#0ea5e9',
+    600: '#0284c7',
+    700: '#0369a1',
+    800: '#075985',
+    900: '#0c4a6e',
   },
   
   // Error Colors

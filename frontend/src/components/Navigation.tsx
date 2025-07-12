@@ -58,8 +58,8 @@ export default function Navigation() {
                     href={item.href}
                     className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors"
                   >
-                    <Icon className="w-4 h-4 mr-2" />
-                    {item.name}
+                    <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    <span className="hidden lg:inline">{item.name}</span>
                   </Link>
                 )
               })}
@@ -122,16 +122,15 @@ export default function Navigation() {
           <div className="pt-2 pb-3 space-y-1">
             {navigation.map((item) => {
               const Icon = item.icon
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="flex items-center px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Icon className="w-4 h-4 mr-3" />
-                  {item.name}
-                </Link>
+              return (                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="flex items-center px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Icon className="w-4 h-4 mr-3" />
+                    {item.name}
+                  </Link>
               )
             })}
           </div>

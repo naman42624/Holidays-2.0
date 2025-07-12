@@ -202,3 +202,112 @@ div:focus-within {
   overflow-wrap: break-word;
   hyphens: auto;
 }
+
+/* Responsive typography and spacing */
+.text-responsive {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
+}
+
+@media (min-width: 640px) {
+  .text-responsive {
+    font-size: 1rem; /* 16px */
+    line-height: 1.5rem; /* 24px */
+  }
+}
+
+/* Responsive button styles */
+.btn-responsive {
+  height: 2.5rem; /* 40px */
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .btn-responsive {
+    height: 3rem; /* 48px */
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* Responsive form input styles */
+.input-responsive {
+  height: 2.5rem; /* 40px */
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .input-responsive {
+    height: 3rem; /* 48px */
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+}
+
+/* Responsive icon sizes */
+.icon-responsive {
+  width: 1rem; /* 16px */
+  height: 1rem; /* 16px */
+}
+
+@media (min-width: 640px) {
+  .icon-responsive {
+    width: 1.25rem; /* 20px */
+    height: 1.25rem; /* 20px */
+  }
+}
+
+/* Responsive spacing */
+.space-responsive {
+  margin-bottom: 1rem; /* 16px */
+}
+
+@media (min-width: 640px) {
+  .space-responsive {
+    margin-bottom: 1.5rem; /* 24px */
+  }
+}
+
+/* Improved touch targets for mobile */
+@media (max-width: 640px) {
+  button,
+  .btn,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"] {
+    min-height: 44px; /* Apple's recommended touch target size */
+    min-width: 44px;
+  }
+}
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+/* Prevent text overflow in cards */
+.text-overflow-safe {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}

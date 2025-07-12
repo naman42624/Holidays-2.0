@@ -268,7 +268,7 @@ export default function CombinedSearchForm() {
               }}
               suggestions={locationSuggestions}
               searchType="flights"
-              icon={<Plane className="w-5 h-5" />}
+              icon={<Plane className="w-4 h-4 sm:w-5 sm:h-5" />}
               error={errors.from?.message}
             />
             {errors.from && (
@@ -289,7 +289,7 @@ export default function CombinedSearchForm() {
               }}
               suggestions={locationSuggestions}
               searchType="flights"
-              icon={<MapPin className="w-5 h-5" />}
+              icon={<MapPin className="w-4 h-4 sm:w-5 sm:h-5" />}
               error={errors.to?.message}
             />
             {errors.to && (
@@ -301,11 +301,11 @@ export default function CombinedSearchForm() {
         {/* Date and Passengers */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Calendar className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
             <Input
               type="date"
               {...register('departureDate')}
-              className="pl-12 pr-4 py-3 h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all"
+              className="pl-10 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all"
             />
             {errors.departureDate && (
               <p className="text-red-500 text-sm mt-1">{errors.departureDate.message}</p>
@@ -313,11 +313,11 @@ export default function CombinedSearchForm() {
           </div>
           {tripType === 'roundtrip' && (
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Calendar className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
               <Input
                 type="date"
                 {...register('returnDate')}
-                className="pl-12 pr-4 py-3 h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all"
+                className="pl-10 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all"
               />
               {errors.returnDate && (
                 <p className="text-red-500 text-sm mt-1">{errors.returnDate.message}</p>
@@ -325,10 +325,10 @@ export default function CombinedSearchForm() {
             </div>
           )}
           <div className="relative">
-            <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Users className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
             <select
               {...register('passengers', { valueAsNumber: true })}
-              className="w-full pl-12 pr-4 py-3 h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all appearance-none"
+              className="w-full pl-10 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all appearance-none"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
                 <option key={num} value={num}>
@@ -365,7 +365,7 @@ export default function CombinedSearchForm() {
             }}
             suggestions={locationSuggestions}
             searchType="hotels"
-            icon={<MapPin className="w-5 h-5" />}
+            icon={<MapPin className="w-4 h-4 sm:w-5 sm:h-5" />}
             error={errors.destination?.message}
           />
           {errors.destination && (
@@ -376,22 +376,22 @@ export default function CombinedSearchForm() {
         {/* Check-in and Check-out */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
-            <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Calendar className="absolute left-2 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <Input
               type="date"
               {...register('checkIn')}
-              className="pl-10 bg-white/90 text-gray-800"
+              className="pl-8 sm:pl-10 bg-white/90 text-gray-800"
             />
             {errors.checkIn && (
               <p className="text-red-500 text-sm mt-1">{errors.checkIn.message}</p>
             )}
           </div>
           <div className="relative">
-            <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Calendar className="absolute left-2 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <Input
               type="date"
               {...register('checkOut')}
-              className="pl-10 bg-white/90 text-gray-800"
+              className="pl-8 sm:pl-10 bg-white/90 text-gray-800"
             />
             {errors.checkOut && (
               <p className="text-red-500 text-sm mt-1">{errors.checkOut.message}</p>
@@ -402,10 +402,10 @@ export default function CombinedSearchForm() {
         {/* Guests and Rooms */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
-            <Users className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Users className="absolute left-2 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <select
               {...register('guests', { valueAsNumber: true })}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
+              className="w-full pl-8 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
                 <option key={num} value={num}>
@@ -418,10 +418,10 @@ export default function CombinedSearchForm() {
             )}
           </div>
           <div className="relative">
-            <Building className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Building className="absolute left-2 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <select
               {...register('rooms', { valueAsNumber: true })}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
+              className="w-full pl-8 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
             >
               {[1, 2, 3, 4, 5].map(num => (
                 <option key={num} value={num}>
@@ -458,7 +458,7 @@ export default function CombinedSearchForm() {
             }}
             suggestions={locationSuggestions}
             searchType="activities"
-            icon={<MapPin className="w-5 h-5" />}
+            icon={<MapPin className="w-4 h-4 sm:w-5 sm:h-5" />}
             error={errors.destination?.message}
           />
           {errors.destination && (
@@ -469,21 +469,21 @@ export default function CombinedSearchForm() {
         {/* Date and Participants */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
-            <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Calendar className="absolute left-2 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <Input
               type="date"
               {...register('date')}
-              className="pl-10 bg-white/90 text-gray-800"
+              className="pl-8 sm:pl-10 bg-white/90 text-gray-800"
             />
             {errors.date && (
               <p className="text-red-500 text-sm mt-1">{errors.date.message}</p>
             )}
           </div>
           <div className="relative">
-            <Users className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <Users className="absolute left-2 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <select
               {...register('participants', { valueAsNumber: true })}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
+              className="w-full pl-8 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
                 <option key={num} value={num}>
@@ -561,17 +561,17 @@ export default function CombinedSearchForm() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-semibold"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-base sm:text-lg font-semibold"
           >
             {isLoading ? (
               <div className="flex items-center justify-center space-x-2">
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Searching...</span>
+                <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-sm sm:text-base">Searching...</span>
               </div>
             ) : (
               <div className="flex items-center justify-center space-x-2">
-                <Search className="w-5 h-5" />
-                <span>
+                <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="text-sm sm:text-base">
                   Search {searchType === 'flights' ? 'Flights' : 
                          searchType === 'hotels' ? 'Hotels' : 'Activities'}
                 </span>

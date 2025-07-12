@@ -4,12 +4,11 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LoadingProvider } from "@/contexts/LoadingContext";
 import { NotificationProvider } from "@/components/ui/NotificationSystem";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
 import ScrollToTopButton from "@/components/ui/ScrollToTopButton";
 import AuthLoadingWrapper from "@/components/AuthLoadingWrapper";
 import RouterEventListener from "@/components/RouterEventListener";
 import { LoadingPerformancePanel } from "@/components/LoadingPerformancePanel";
+import ConditionalLayout from "@/components/ConditionalLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,9 +40,9 @@ export default function RootLayout({
             <AuthProvider>
               <RouterEventListener>
                 <AuthLoadingWrapper>
-                  <Navigation />
-                  <main>{children}</main>
-                  <Footer />
+                  <ConditionalLayout>
+                    {children}
+                  </ConditionalLayout>
                   <ScrollToTopButton />
                   <LoadingPerformancePanel />
                 </AuthLoadingWrapper>

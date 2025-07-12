@@ -35,8 +35,33 @@ app.use(middleware_1.securityHeaders);
 app.use((0, compression_1.default)());
 app.use((0, morgan_1.default)('combined'));
 app.use(middleware_1.requestLogger);
+const allowedOrigins = process.env.FRONTEND_URLS
+    ? process.env.FRONTEND_URLS.split(',').map(url => url.trim())
+    : ['http://localhost:3000'];
+const isOriginAllowed = (origin) => {
+    return allowedOrigins.some(allowed => {
+        if (allowed === origin)
+            return true;
+        if (allowed.includes('*.')) {
+            const pattern = allowed.replace(/\*/g, '.*');
+            const regex = new RegExp(`^${pattern}$`);
+            return regex.test(origin);
+        }
+        return false;
+    });
+};
 app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: (origin, callback) => {
+        if (!origin)
+            return callback(null, true);
+        if (isOriginAllowed(origin)) {
+            callback(null, true);
+        }
+        else {
+            console.warn(`CORS blocked origin: ${origin}`);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],

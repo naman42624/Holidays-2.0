@@ -415,7 +415,7 @@ export default function FlightsPage() {
                   }}
                   suggestions={locationSuggestions}
                   searchType="flights"
-                  icon={<Plane className="w-5 h-5" />}
+                  icon={<Plane className="w-4 h-4 sm:w-5 sm:h-5" />}
                   error={errors.from?.message}
                 />
               </div>
@@ -438,7 +438,7 @@ export default function FlightsPage() {
                   }}
                   suggestions={locationSuggestions}
                   searchType="flights"
-                  icon={<MapPin className="w-5 h-5" />}
+                  icon={<MapPin className="w-4 h-4 sm:w-5 sm:h-5" />}
                   error={errors.to?.message}
                 />
               </div>
@@ -447,11 +447,11 @@ export default function FlightsPage() {
               <div className="lg:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Departure</label>
                 <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Calendar className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                   <Input
                     type="date"
                     {...register('departureDate')}
-                    className="pl-12 h-12 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all duration-200"
+                    className="pl-10 sm:pl-12 h-10 sm:h-12 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all duration-200"
                   />
                 </div>
                 {errors.departureDate && (
@@ -464,11 +464,11 @@ export default function FlightsPage() {
                 <div className="lg:col-span-1">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Return</label>
                   <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Calendar className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                     <Input
                       type="date"
                       {...register('returnDate')}
-                      className="pl-12 h-12 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all duration-200"
+                      className="pl-10 sm:pl-12 h-10 sm:h-12 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all duration-200"
                     />
                   </div>
                   {errors.returnDate && (
@@ -481,10 +481,10 @@ export default function FlightsPage() {
               <div className="lg:col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Passengers</label>
                 <div className="relative">
-                  <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Users className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                   <select
                     {...register('adults', { valueAsNumber: true })}
-                    className="w-full pl-12 pr-4 py-3 h-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-gray-400 transition-all duration-200 bg-white"
+                    className="w-full pl-10 sm:pl-12 pr-4 py-3 h-10 sm:h-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-gray-400 transition-all duration-200 bg-white"
                   >
                     {[1, 2, 3, 4, 5, 6].map(num => (
                       <option key={num} value={num}>
@@ -503,17 +503,17 @@ export default function FlightsPage() {
                 <Button
                   type="submit"
                   disabled={isSearching}
-                  className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                  className="w-full h-10 sm:h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                 >
                   {isSearching ? (
                     <div className="flex items-center justify-center space-x-2">
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Searching...</span>
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                      <span className="text-sm sm:text-base">Searching...</span>
                     </div>
                   ) : (
                     <div className="flex items-center justify-center space-x-2">
-                      <Search className="w-5 h-5" />
-                      <span>Search Flights</span>
+                      <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="text-sm sm:text-base">Search Flights</span>
                     </div>
                   )}
                 </Button>

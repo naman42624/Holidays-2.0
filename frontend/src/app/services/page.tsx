@@ -141,8 +141,8 @@ export default function ServicesPage() {
               <Card key={index} className="hover:shadow-lg transition-shadow h-full">
                 <CardHeader>
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-yellow-100 rounded-lg">
-                      <service.icon className="w-6 h-6 text-yellow-600" />
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <service.icon className="w-6 h-6 text-blue-600" />
                     </div>
                     <CardTitle className="text-xl">{service.title}</CardTitle>
                   </div>
@@ -157,7 +157,7 @@ export default function ServicesPage() {
                       </li>
                     ))}
                   </ul>
-                  <Button className="w-full mt-4 bg-yellow-500 hover:bg-yellow-600">
+                  <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700">
                     Learn More
                   </Button>
                 </CardContent>
@@ -181,8 +181,8 @@ export default function ServicesPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {whyChooseUs.map((item, index) => (
               <div key={index} className="text-center">
-                <div className="mx-auto w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
-                  <item.icon className="w-8 h-8 text-yellow-600" />
+                <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                  <item.icon className="w-8 h-8 text-blue-600" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">{item.title}</h3>
                 <p className="text-gray-600">{item.description}</p>

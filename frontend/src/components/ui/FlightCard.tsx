@@ -328,7 +328,7 @@ export default function FlightCard({ flight, index, onSelect }: FlightCardProps)
               }}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
             >
-              Select Flight 2.0
+              Select Flight
             </Button>
           </div>
         </div>

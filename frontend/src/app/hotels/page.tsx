@@ -197,7 +197,7 @@ export default function HotelsPage() {
                   suggestions={locationSuggestions}
                   onLocationSelect={selectLocation}
                   searchType="hotels"
-                  icon={<MapPin className="w-4 h-4" />}
+                  icon={<MapPin className="w-3 h-3 sm:w-4 sm:h-4" />}
                   className="h-10 text-sm"
                   error={errors.destination?.message}
                 />
@@ -205,11 +205,11 @@ export default function HotelsPage() {
 
               {/* Check-in Date */}
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Calendar className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
                 <Input
                   type="date"
                   {...register('checkIn')}
-                  className="pl-10 h-10 text-sm min-w-[140px]"
+                  className="pl-8 sm:pl-10 h-10 text-sm min-w-[140px]"
                 />
                 {errors.checkIn && (
                   <p className="text-red-500 text-xs mt-1">{errors.checkIn.message}</p>
@@ -218,11 +218,11 @@ export default function HotelsPage() {
 
               {/* Check-out Date */}
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Calendar className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
                 <Input
                   type="date"
                   {...register('checkOut')}
-                  className="pl-10 h-10 text-sm min-w-[140px]"
+                  className="pl-8 sm:pl-10 h-10 text-sm min-w-[140px]"
                 />
                 {errors.checkOut && (
                   <p className="text-red-500 text-xs mt-1">{errors.checkOut.message}</p>
@@ -231,10 +231,10 @@ export default function HotelsPage() {
 
               {/* Guests */}
               <div className="relative">
-                <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Users className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
                 <select
                   {...register('adults', { valueAsNumber: true })}
-                  className="pl-10 pr-8 py-2 h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm min-w-[100px]"
+                  className="pl-8 sm:pl-10 pr-8 py-2 h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm min-w-[100px]"
                 >
                   {[1, 2, 3, 4, 5, 6].map(num => (
                     <option key={num} value={num}>
@@ -254,8 +254,8 @@ export default function HotelsPage() {
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-10 text-sm font-medium"
               >
                 <div className="flex items-center space-x-2">
-                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-                  <span>{isSearching ? 'Searching...' : 'Search'}</span>
+                  {isSearching ? <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" /> : <Search className="w-3 h-3 sm:w-4 sm:h-4" />}
+                  <span className="text-sm">{isSearching ? 'Searching...' : 'Search'}</span>
                 </div>
               </Button>
             </div>

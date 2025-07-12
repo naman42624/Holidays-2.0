@@ -611,7 +611,7 @@ export default function FlightsPage() {
                         <div className="text-sm text-gray-500 mb-4">per person</div>
                         
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                          Select Flight 3.0
+                          Select Flight
                         </Button>
                       </div>
                     </div>

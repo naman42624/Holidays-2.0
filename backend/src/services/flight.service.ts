@@ -472,7 +472,7 @@ export class FlightService {
   /**
    * Apply markup to price
    */
-  private applyMarkup(price: string, markupPercent: number = 2.5): string {
+  private applyMarkup(price: string, markupPercent: number = 0): string {
     const originalPrice = parseFloat(price);
     const markup = originalPrice * (markupPercent / 100);
     const finalPrice = originalPrice + markup;
@@ -496,7 +496,7 @@ export class FlightService {
           total: markedUpPrice,
           currency: offer.price.currency,
           originalPrice: offer.price.total,
-          markup: '2.5%',
+          markup: '0%',
         },
         itineraries: offer.itineraries.map(itinerary => ({
           duration: itinerary.duration,

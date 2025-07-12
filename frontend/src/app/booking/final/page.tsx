@@ -104,8 +104,22 @@ export default function FinalBookingPage() {
       
     } catch (error) {
       console.error('Error submitting booking:', error)
-      // Show error message to user
-      alert('There was an error submitting your booking. Please try again.')
+      
+      // Show detailed error message
+      let errorMessage = 'There was an error submitting your booking. Please try again.'
+      
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'object' && error !== null) {
+        const errorObj = error as { response?: { data?: { error?: string } }; message?: string }
+        if (errorObj.response?.data?.error) {
+          errorMessage = errorObj.response.data.error
+        } else if (errorObj.message) {
+          errorMessage = errorObj.message
+        }
+      }
+      
+      alert(`Booking failed: ${errorMessage}`)
     } finally {
       setIsSubmitting(false)
     }

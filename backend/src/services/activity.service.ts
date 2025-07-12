@@ -473,7 +473,7 @@ export class ActivityService {
       images: activity.pictures || [],
       bookingLink: activity.bookingLink,
       price: activity.price ? {
-        amount: parseFloat(activity.price.amount) * 85 * 1.025, // Convert to INR with 2.5% markup
+        amount: parseFloat(activity.price.amount) * 85, // Convert to INR with no markup
         currency: 'INR',
       } : null,
       duration: {

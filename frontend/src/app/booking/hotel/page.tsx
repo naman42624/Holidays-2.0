@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Hotel, HotelSearchForm, BookingContact } from '@/types'
-import { formatCurrency } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -191,11 +190,10 @@ export default function HotelBookingPage() {
   }
 
   const { hotel, searchForm } = bookingData
-  const offer = hotel.offers?.[0]
+  // const offer = hotel.offers?.[0]
   const checkInDate = new Date(searchForm.checkIn)
   const checkOutDate = new Date(searchForm.checkOut)
   const nights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24))
-  const totalPrice = offer ? parseFloat(offer.price.total) * nights : 0
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -261,7 +259,6 @@ export default function HotelBookingPage() {
                       </div>
                       
                       <div className="text-right">
-                        <p className="text-2xl font-bold text-blue-600">{formatCurrency(totalPrice, offer?.price.currency || 'USD')}</p>
                         <p className="text-sm text-gray-600">for {nights} night{nights > 1 ? 's' : ''}</p>
                       </div>
                     </div>
@@ -489,10 +486,6 @@ export default function HotelBookingPage() {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Room Rate</span>
-                      <span className="font-medium">{formatCurrency(offer ? parseFloat(offer.price.total) : 0, offer?.price.currency || 'USD')}/night</span>
-                    </div>
-                    <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600">Nights</span>
                       <span className="font-medium">{nights}</span>
                     </div>
@@ -504,16 +497,10 @@ export default function HotelBookingPage() {
                       <span className="text-sm text-gray-600">Rooms</span>
                       <span className="font-medium">{searchForm.rooms}</span>
                     </div>
-                    <div className="flex justify-between items-center">
+                    {/* <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600">Taxes & Fees</span>
                       <span className="font-medium">Included</span>
-                    </div>
-                    <div className="border-t pt-4">
-                      <div className="flex justify-between items-center">
-                        <span className="font-semibold">Total Amount</span>
-                        <span className="font-bold text-lg">{formatCurrency(totalPrice, offer?.price.currency || 'USD')}</span>
-                      </div>
-                    </div>
+                    </div> */}
                     
                     <Button 
                       onClick={handleContinue}

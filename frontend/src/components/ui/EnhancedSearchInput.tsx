@@ -75,8 +75,8 @@ export default function EnhancedSearchInput({
   }
 
   const defaultIcon = searchType === 'flights' ? 
-    <Plane className="w-5 h-5" /> : 
-    <MapPin className="w-5 h-5" />
+    <Plane className="w-4 h-4 sm:w-5 sm:h-5" /> : 
+    <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
 
   return (
     <div ref={containerRef} className={`relative enhanced-search-input ${className}`}>
@@ -92,7 +92,7 @@ export default function EnhancedSearchInput({
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           {/* Icon */}
-          <div className={`flex-shrink-0 flex items-center justify-center w-12 h-12 ${
+          <div className={`flex-shrink-0 flex items-center justify-center w-10 sm:w-12 h-10 sm:h-12 ${
             error ? 'text-red-400' : isFocused ? 'text-gray-600' : 'text-gray-400'
           }`}>
             {icon || defaultIcon}
@@ -109,7 +109,7 @@ export default function EnhancedSearchInput({
             placeholder={placeholder}
             required={required}
             disabled={disabled}
-            className={`flex-1 h-12 px-3 py-2 text-gray-900 placeholder-gray-500 bg-transparent border-none outline-none ${
+            className={`flex-1 h-10 sm:h-12 px-2 sm:px-3 py-2 text-sm sm:text-base text-gray-900 placeholder-gray-500 bg-transparent border-none outline-none ${
               disabled ? 'cursor-not-allowed' : ''
             }`}
             autoComplete="off"
@@ -123,9 +123,9 @@ export default function EnhancedSearchInput({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ duration: 0.15 }}
-                className="flex-shrink-0 flex items-center justify-center w-10 h-10"
+                className="flex-shrink-0 flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10"
               >
-                <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500 animate-spin" />
               </motion.div>
             )}
           </AnimatePresence>
@@ -139,18 +139,18 @@ export default function EnhancedSearchInput({
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ duration: 0.15 }}
                 onClick={handleClear}
-                className="flex-shrink-0 flex items-center justify-center w-10 h-10 text-gray-400 hover:text-gray-600 transition-colors"
+                className="flex-shrink-0 flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 text-gray-400 hover:text-gray-600 transition-colors"
                 type="button"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3 h-3 sm:w-4 sm:h-4" />
               </motion.button>
             )}
           </AnimatePresence>
 
           {/* Search Icon (when no custom icon) */}
           {!icon && !isLoading && !value && (
-            <div className="flex-shrink-0 flex items-center justify-center w-10 h-10">
-              <Search className={`w-4 h-4 ${isFocused ? 'text-gray-600' : 'text-gray-400'}`} />
+            <div className="flex-shrink-0 flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10">
+              <Search className={`w-3 h-3 sm:w-4 sm:h-4 ${isFocused ? 'text-gray-600' : 'text-gray-400'}`} />
             </div>
           )}
         </div>
