@@ -45,6 +45,8 @@ export default function FlightsPage() {
   const [locationSuggestions, setLocationSuggestions] = useState<Location[]>([])
   const [searchOrigin, setSearchOrigin] = useState('')
   const [searchDestination, setSearchDestination] = useState('')
+  const [filtersExpanded, setFiltersExpanded] = useState(false)
+  const [compactSearchForm, setCompactSearchForm] = useState(false)
   
   // Form state for controlled inputs
   const [formState, setFormState] = useState({
@@ -366,6 +368,7 @@ export default function FlightsPage() {
       setSearchError(errorMessage)
     } finally {
       setIsSearching(false)
+      setCompactSearchForm(true) // Set to compact mode after search completes
     }
   }, [locationSuggestions])
 
@@ -373,153 +376,197 @@ export default function FlightsPage() {
     <div className="min-h-screen" style={{ backgroundColor: colors.gray[50] }}>
       {/* Enhanced Search Form */}
       <div className="bg-white shadow-sm border-b sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-              {/* Trip Type */}
-              <div className="lg:col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Trip Type</label>
-                <select
-                  {...register('tripType')}
-                  className="w-full px-3 py-3 h-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-gray-400 transition-all duration-200 bg-white"
-                  onChange={(e) => {
-                    const tripType = e.target.value as 'round-trip' | 'one-way'
-                    setValue('tripType', tripType)
-                    setFormState(prev => ({ ...prev, tripType }))
-                    // Hide return date for one-way trips
-                    if (tripType === 'one-way') {
-                      setValue('returnDate', '')
-                    }
-                  }}
-                >
-                  <option value="round-trip">Round Trip</option>
-                  <option value="one-way">One Way</option>
-                </select>
-              </div>
-
-              {/* From */}
-              <div className="lg:col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">From</label>
-                <EnhancedSearchInput
-                  placeholder="Departure"
-                  value={formState.from}
-                  onChange={(value) => {
-                    setFormState(prev => ({ ...prev, from: value }))
-                    setValue('from', value)
-                    handleLocationChange(value, 'from')
-                  }}
-                  onLocationSelect={(location) => {
-                    const locationValue = location.iataCode || location.name
-                    setFormState(prev => ({ ...prev, from: locationValue }))
-                    setValue('from', locationValue)
-                  }}
-                  suggestions={locationSuggestions}
-                  searchType="flights"
-                  icon={<Plane className="w-4 h-4 sm:w-5 sm:h-5" />}
-                  error={errors.from?.message}
-                />
-              </div>
-
-              {/* To */}
-              <div className="lg:col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">To</label>
-                <EnhancedSearchInput
-                  placeholder="Destination"
-                  value={formState.to}
-                  onChange={(value) => {
-                    setFormState(prev => ({ ...prev, to: value }))
-                    setValue('to', value)
-                    handleLocationChange(value, 'to')
-                  }}
-                  onLocationSelect={(location) => {
-                    const locationValue = location.iataCode || location.name
-                    setFormState(prev => ({ ...prev, to: locationValue }))
-                    setValue('to', locationValue)
-                  }}
-                  suggestions={locationSuggestions}
-                  searchType="flights"
-                  icon={<MapPin className="w-4 h-4 sm:w-5 sm:h-5" />}
-                  error={errors.to?.message}
-                />
-              </div>
-
-              {/* Departure Date */}
-              <div className="lg:col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Departure</label>
-                <div className="relative">
-                  <Calendar className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                  <Input
-                    type="date"
-                    {...register('departureDate')}
-                    className="pl-10 sm:pl-12 h-10 sm:h-12 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all duration-200"
-                  />
-                </div>
-                {errors.departureDate && (
-                  <p className="text-red-500 text-xs mt-1">{errors.departureDate.message}</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          {/* Search Form Toggle Button (visible only after search) */}
+          {flightOffers.length > 0 && (
+            <div className="flex justify-between items-center py-2">
+              <div className="flex-1">
+                {compactSearchForm && (
+                  <div className="text-sm font-medium">
+                    <span className="text-gray-600">
+                      {formState.from} → {formState.to}
+                      <span className="mx-2">|</span>
+                      {watch('departureDate')}
+                      {formState.tripType === 'round-trip' && watch('returnDate') && (
+                        <>
+                          <span className="mx-2">-</span>
+                          {watch('returnDate')}
+                        </>
+                      )}
+                      <span className="mx-2">|</span>
+                      {watch('adults')} {watch('adults') === 1 ? 'adult' : 'adults'}
+                    </span>
+                  </div>
                 )}
               </div>
-
-              {/* Return Date - Only show for round-trip */}
-              {formState.tripType === 'round-trip' && (
+              <button
+                type="button"
+                onClick={() => setCompactSearchForm(!compactSearchForm)}
+                className="flex items-center text-amber-600 hover:text-amber-800 ml-2"
+              >
+                <span className="mr-1 text-sm">{compactSearchForm ? 'Modify' : 'Hide'}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-4 w-4 transition-transform ${compactSearchForm ? '' : 'transform rotate-180'}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+          )}
+          
+          {/* Collapsible Form Content */}
+          <div className={`transition-all duration-300 ease-in-out ${compactSearchForm ? 'max-h-0 overflow-hidden opacity-0 py-0' : 'max-h-[800px] opacity-100 py-4'}`}>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+                {/* Trip Type */}
                 <div className="lg:col-span-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Return</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Trip Type</label>
+                  <select
+                    {...register('tripType')}
+                    className="w-full px-3 py-3 h-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition-all duration-200 bg-white"
+                    onChange={(e) => {
+                      const tripType = e.target.value as 'round-trip' | 'one-way'
+                      setValue('tripType', tripType)
+                      setFormState(prev => ({ ...prev, tripType }))
+                      // Hide return date for one-way trips
+                      if (tripType === 'one-way') {
+                        setValue('returnDate', '')
+                      }
+                    }}
+                  >
+                    <option value="round-trip">Round Trip</option>
+                    <option value="one-way">One Way</option>
+                  </select>
+                </div>
+
+                {/* From */}
+                <div className="lg:col-span-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">From</label>
+                  <EnhancedSearchInput
+                    placeholder="Departure"
+                    value={formState.from}
+                    onChange={(value) => {
+                      setFormState(prev => ({ ...prev, from: value }))
+                      setValue('from', value)
+                      handleLocationChange(value, 'from')
+                    }}
+                    onLocationSelect={(location) => {
+                      const locationValue = location.iataCode || location.name
+                      setFormState(prev => ({ ...prev, from: locationValue }))
+                      setValue('from', locationValue)
+                    }}
+                    suggestions={locationSuggestions}
+                    searchType="flights"
+                    icon={<Plane className="w-4 h-4 sm:w-5 sm:h-5" />}
+                    error={errors.from?.message}
+                  />
+                </div>
+
+                {/* To */}
+                <div className="lg:col-span-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">To</label>
+                  <EnhancedSearchInput
+                    placeholder="Destination"
+                    value={formState.to}
+                    onChange={(value) => {
+                      setFormState(prev => ({ ...prev, to: value }))
+                      setValue('to', value)
+                      handleLocationChange(value, 'to')
+                    }}
+                    onLocationSelect={(location) => {
+                      const locationValue = location.iataCode || location.name
+                      setFormState(prev => ({ ...prev, to: locationValue }))
+                      setValue('to', locationValue)
+                    }}
+                    suggestions={locationSuggestions}
+                    searchType="flights"
+                    icon={<MapPin className="w-4 h-4 sm:w-5 sm:h-5" />}
+                    error={errors.to?.message}
+                  />
+                </div>
+
+                {/* Departure Date */}
+                <div className="lg:col-span-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Departure</label>
                   <div className="relative">
                     <Calendar className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                     <Input
                       type="date"
-                      {...register('returnDate')}
-                      className="pl-10 sm:pl-12 h-10 sm:h-12 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all duration-200"
+                      {...register('departureDate')}
+                      className="pl-10 sm:pl-12 h-10 sm:h-12 border-2 border-gray-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 rounded-lg transition-all duration-200"
                     />
                   </div>
-                  {errors.returnDate && (
-                    <p className="text-red-500 text-xs mt-1">{errors.returnDate.message}</p>
+                  {errors.departureDate && (
+                    <p className="text-red-500 text-xs mt-1">{errors.departureDate.message}</p>
                   )}
                 </div>
-              )}
 
-              {/* Passengers */}
-              <div className="lg:col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Passengers</label>
-                <div className="relative">
-                  <Users className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                  <select
-                    {...register('adults', { valueAsNumber: true })}
-                    className="w-full pl-10 sm:pl-12 pr-4 py-3 h-10 sm:h-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-gray-400 transition-all duration-200 bg-white"
-                  >
-                    {[1, 2, 3, 4, 5, 6].map(num => (
-                      <option key={num} value={num}>
-                        {num} {num === 1 ? 'Adult' : 'Adults'}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                {errors.adults && (
-                  <p className="text-red-500 text-xs mt-1">{errors.adults.message}</p>
+                {/* Return Date - Only show for round-trip */}
+                {formState.tripType === 'round-trip' && (
+                  <div className="lg:col-span-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Return</label>
+                    <div className="relative">
+                      <Calendar className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                      <Input
+                        type="date"
+                        {...register('returnDate')}
+                        className="pl-10 sm:pl-12 h-10 sm:h-12 border-2 border-gray-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 rounded-lg transition-all duration-200"
+                      />
+                    </div>
+                    {errors.returnDate && (
+                      <p className="text-red-500 text-xs mt-1">{errors.returnDate.message}</p>
+                    )}
+                  </div>
                 )}
-              </div>
 
-              {/* Search Button */}
-              <div className="lg:col-span-1 flex items-end">
-                <Button
-                  type="submit"
-                  disabled={isSearching}
-                  className="w-full h-10 sm:h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
-                >
-                  {isSearching ? (
-                    <div className="flex items-center justify-center space-x-2">
-                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                      <span className="text-sm sm:text-base">Searching...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center space-x-2">
-                      <Search className="w-4 h-4 sm:w-5 sm:h-5" />
-                      <span className="text-sm sm:text-base">Search Flights</span>
-                    </div>
+                {/* Passengers */}
+                <div className="lg:col-span-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Passengers</label>
+                  <div className="relative">
+                    <Users className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                    <select
+                      {...register('adults', { valueAsNumber: true })}
+                      className="w-full pl-10 sm:pl-12 pr-4 py-3 h-10 sm:h-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition-all duration-200 bg-white"
+                    >
+                      {[1, 2, 3, 4, 5, 6].map(num => (
+                        <option key={num} value={num}>
+                          {num} {num === 1 ? 'Adult' : 'Adults'}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {errors.adults && (
+                    <p className="text-red-500 text-xs mt-1">{errors.adults.message}</p>
                   )}
-                </Button>
+                </div>
+
+                {/* Search Button */}
+                <div className="lg:col-span-1 flex items-end">
+                  <Button
+                    type="submit"
+                    disabled={isSearching}
+                    className="w-full h-10 sm:h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                  >
+                    {isSearching ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                        <span className="text-sm sm:text-base">Searching...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center space-x-2">
+                        <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <span className="text-sm sm:text-base">Search Flights</span>
+                      </div>
+                    )}
+                  </Button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
 
@@ -540,87 +587,133 @@ export default function FlightsPage() {
             className="mb-6"
           />
         )}
+        
+        {/* Mobile Filter Toggle */}
+        {flightOffers.length > 0 && !isSearching && (
+          <div className="mb-4 md:hidden">
+            <button 
+              onClick={() => setFiltersExpanded(!filtersExpanded)}
+              className="flex items-center justify-between w-full p-3 bg-white rounded-lg shadow-sm border border-gray-200"
+            >
+              <div className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
+                </svg>
+                <span className="font-medium text-gray-700">Filters & Sorting</span>
+              </div>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-5 w-5 text-amber-600 transition-transform duration-200 ${filtersExpanded ? 'transform rotate-180' : ''}`}
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        )}
 
-        {/* Filters - Always show if we have original flights */}
+        {/* Filters - Collapsible on mobile */}
         {flightOffers.length > 0 && !isSearching && (
           <div className="mb-6 p-4 bg-white rounded-lg shadow-sm" style={{ borderColor: colors.gray[200], borderWidth: '1px' }}>
-            <h3 className="text-lg font-semibold mb-4" style={{ color: colors.gray[900] }}>Filters</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Max Price */}
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: colors.gray[700] }}>
-                  Max Price: ₹{filters.maxPrice || '50,000'}
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="100000"
-                  step="1000"
-                  value={filters.maxPrice || 50000}
-                  onChange={(e) => setFilters({...filters, maxPrice: e.target.value})}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                />
-              </div>
+            <button 
+              onClick={() => setFiltersExpanded(!filtersExpanded)} 
+              className="flex justify-between w-full items-center md:hidden mb-2"
+            >
+              <h3 className="text-lg font-semibold" style={{ color: colors.gray[900] }}>Filters</h3>
+              <span className="text-amber-600">
+                {filtersExpanded ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
+              </span>
+            </button>
+            
+            {/* Always visible on desktop, toggleable on mobile */}
+            <div className={`${filtersExpanded ? 'block' : 'hidden'} md:block`}>
+              <h3 className="text-lg font-semibold mb-4 hidden md:block" style={{ color: colors.gray[900] }}>Filters</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Max Price */}
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: colors.gray[700] }}>
+                    Max Price: ₹{filters.maxPrice || '50,000'}
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100000"
+                    step="1000"
+                    value={filters.maxPrice || 50000}
+                    onChange={(e) => setFilters({...filters, maxPrice: e.target.value})}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                  />
+                </div>
 
-              {/* Max Duration */}
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: colors.gray[700] }}>
-                  Max Duration: {filters.maxDuration || 24}h
-                </label>
-                <input
-                  type="range"
-                  min="1"
-                  max="24"
-                  value={filters.maxDuration || 24}
-                  onChange={(e) => setFilters({...filters, maxDuration: e.target.value})}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                />
-              </div>
+                {/* Max Duration */}
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: colors.gray[700] }}>
+                    Max Duration: {filters.maxDuration || 24}h
+                  </label>
+                  <input
+                    type="range"
+                    min="1"
+                    max="24"
+                    value={filters.maxDuration || 24}
+                    onChange={(e) => setFilters({...filters, maxDuration: e.target.value})}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                  />
+                </div>
 
-              {/* Stops */}
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: colors.gray[700] }}>Stops</label>
-                <select
-                  value={filters.stops}
-                  onChange={(e) => setFilters({...filters, stops: e.target.value as 'any' | 'nonstop' | '1stop' | '2+stops'})}
-                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2"
-                  style={{ 
-                    borderColor: colors.gray[300],
-                    backgroundColor: 'white',
-                    color: colors.gray[900]
-                  }}
-                >
-                  <option value="any">Any</option>
-                  <option value="nonstop">Non-stop</option>
-                  <option value="1stop">1 stop</option>
-                  <option value="2+stops">2+ stops</option>
-                </select>
-              </div>
+                {/* Stops */}
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: colors.gray[700] }}>Stops</label>
+                  <select
+                    value={filters.stops}
+                    onChange={(e) => setFilters({...filters, stops: e.target.value as 'any' | 'nonstop' | '1stop' | '2+stops'})}
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-500"
+                    style={{ 
+                      borderColor: colors.gray[300],
+                      backgroundColor: 'white',
+                      color: colors.gray[900]
+                    }}
+                  >
+                    <option value="any">Any</option>
+                    <option value="nonstop">Non-stop</option>
+                    <option value="1stop">1 stop</option>
+                    <option value="2+stops">2+ stops</option>
+                  </select>
+                </div>
 
-              {/* Sort */}
-              <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: colors.gray[700] }}>Sort by</label>
-                <select
-                  value={`${sortBy}-${sortOrder}`}
-                  onChange={(e) => {
-                    const [newSortBy, newSortOrder] = e.target.value.split('-') as [typeof sortBy, typeof sortOrder]
-                    setSortBy(newSortBy)
-                    setSortOrder(newSortOrder)
-                  }}
-                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2"
-                  style={{ 
-                    borderColor: colors.gray[300],
-                    backgroundColor: 'white',
-                    color: colors.gray[900]
-                  }}
-                >
-                  <option value="price-asc">Price: Low to High</option>
-                  <option value="price-desc">Price: High to Low</option>
-                  <option value="duration-asc">Duration: Short to Long</option>
-                  <option value="duration-desc">Duration: Long to Short</option>
-                  <option value="departure-asc">Departure: Early to Late</option>
-                  <option value="departure-desc">Departure: Late to Early</option>
-                </select>
+                {/* Sort */}
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: colors.gray[700] }}>Sort by</label>
+                  <select
+                    value={`${sortBy}-${sortOrder}`}
+                    onChange={(e) => {
+                      const [newSortBy, newSortOrder] = e.target.value.split('-') as [typeof sortBy, typeof sortOrder]
+                      setSortBy(newSortBy)
+                      setSortOrder(newSortOrder)
+                    }}
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-500"
+                    style={{ 
+                      borderColor: colors.gray[300],
+                      backgroundColor: 'white',
+                      color: colors.gray[900]
+                    }}
+                  >
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="duration-asc">Duration: Short to Long</option>
+                    <option value="duration-desc">Duration: Long to Short</option>
+                    <option value="departure-asc">Departure: Early to Late</option>
+                    <option value="departure-desc">Departure: Late to Early</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -709,6 +802,7 @@ export default function FlightsPage() {
                 setSearchDestination('')
                 setFlightOffers([])
                 setFilteredFlights([])
+                setCompactSearchForm(false) // Show full search form for new search
               }}
               onRefresh={() => {
                 // Retry search with current criteria
