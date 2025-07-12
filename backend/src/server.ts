@@ -50,10 +50,11 @@ app.use(requestLogger);
 
 const allowedOrigins = process.env.FRONTEND_URLS 
   ? process.env.FRONTEND_URLS.split(',').map(url => url.trim())
-  : ['http://localhost:3000'];
+  : ['https://www.holidaysbybells.com'];
 
 // Helper function to check if origin is allowed (supports wildcards)
 const isOriginAllowed = (origin: string): boolean => {
+  console.log("allowed origins", allowedOrigins)
   return allowedOrigins.some(allowed => {
     // Exact match
     if (allowed === origin) return true;
