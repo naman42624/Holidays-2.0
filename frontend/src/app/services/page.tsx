@@ -119,7 +119,7 @@ export default function ServicesPage() {
         <div className="container mx-auto px-4">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Holidays by Bells Services</h1>
-            <p className="text-xl md:text-2xl mb-2">Your Gateway to Amazing Travel Experiences</p>
+            <p className="text-xl md:text-2xl mb-2">Unlock The World With Bells</p>
             <p className="text-lg opacity-90">Crafted by Bells with Love & Expertise</p>
           </div>
         </div>

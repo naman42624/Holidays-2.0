@@ -64,7 +64,7 @@ export default function PrivacyPage() {
                 <br />
                 Email: privacy@holidaysbybells.com
                 <br />
-                Phone: +1 (555) 123-4567
+                Phone: (+91) 9988805805
               </p>
             </section>
           </div>

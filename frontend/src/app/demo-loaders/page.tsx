@@ -76,7 +76,7 @@ export default function LoadersDemo() {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">Loading System Demo</h1>
         <p className="text-gray-600 mb-4">
-          Comprehensive loading states and animations for the Amadeus Travel Platform
+          Comprehensive loading states and animations for the Holidays Travel Platform
         </p>
         <div className="flex justify-center gap-4">
           <Link href="/advanced-loading-demo">
@@ -84,7 +84,7 @@ export default function LoadersDemo() {
               View Advanced Demo →
             </Button>
           </Link>
-          <Link href="https://github.com/yourusername/amadeus-travel-platform/blob/main/frontend/LOADING_SYSTEM.md" target="_blank">
+          <Link href="https://github.com/yourusername/holidays-travel-platform/blob/main/frontend/LOADING_SYSTEM.md" target="_blank">
             <Button variant="outline">
               📖 Loading Documentation
             </Button>

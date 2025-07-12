@@ -21,8 +21,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Holidays by Bells - Your Gateway to Amazing Travel Experiences",
-  description: "Premium travel services crafted by Bells with 15+ years of expertise. Book flights, hotels, and activities with confidence.",
+  title: "Holidays by Bells - Unlock The World With Bells",
+  description: "Unlock The World With Bells - Premium travel services crafted by Bells with 5+ years of expertise. Book flights, hotels, and activities with confidence.",
 };
 
 export default function RootLayout({

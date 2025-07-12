@@ -109,7 +109,7 @@ export default function EnhancedSearchInput({
             placeholder={placeholder}
             required={required}
             disabled={disabled}
-            className={`flex-1 h-10 sm:h-12 px-2 sm:px-3 py-2 text-sm sm:text-base text-gray-900 placeholder-gray-500 bg-transparent border-none outline-none ${
+            className={`flex-1 h-10 sm:h-12 pl-1 pr-2 sm:pl-2 sm:pr-3 py-2 text-sm sm:text-base text-gray-900 placeholder-gray-500 bg-transparent border-none outline-none ${
               disabled ? 'cursor-not-allowed' : ''
             }`}
             autoComplete="off"

@@ -78,7 +78,7 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center">
                 <Phone className="w-4 h-4 mr-3 text-yellow-400" />
-                <span className="text-gray-300">+1 (555) 123-4567</span>
+                <span className="text-gray-300">(+91) 9988805805 </span>
               </div>
               <div className="flex items-center">
                 <Mail className="w-4 h-4 mr-3 text-yellow-400" />
@@ -87,9 +87,9 @@ export default function Footer() {
               <div className="flex items-start">
                 <MapPin className="w-4 h-4 mr-3 text-yellow-400 mt-1" />
                 <span className="text-gray-300">
-                  123 Travel Street<br />
-                  Suite 456<br />
-                  New York, NY 10001
+                  174 Garha Road<br />
+                  Opp. Bus Stand Gate no. 6 <br />
+                  Jalandhar, Punjab 144001
                 </span>
               </div>
             </div>

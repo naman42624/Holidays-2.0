@@ -301,11 +301,11 @@ export default function CombinedSearchForm() {
         {/* Date and Passengers */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="relative">
-            <Calendar className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+            <Calendar className="absolute left-3 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
             <Input
               type="date"
               {...register('departureDate')}
-              className="pl-10 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all"
+              className="pl-11 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all"
             />
             {errors.departureDate && (
               <p className="text-red-500 text-sm mt-1">{errors.departureDate.message}</p>
@@ -313,11 +313,11 @@ export default function CombinedSearchForm() {
           </div>
           {tripType === 'roundtrip' && (
             <div className="relative">
-              <Calendar className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+              <Calendar className="absolute left-3 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
               <Input
                 type="date"
                 {...register('returnDate')}
-                className="pl-10 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all"
+                className="pl-11 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all"
               />
               {errors.returnDate && (
                 <p className="text-red-500 text-sm mt-1">{errors.returnDate.message}</p>
@@ -325,10 +325,10 @@ export default function CombinedSearchForm() {
             </div>
           )}
           <div className="relative">
-            <Users className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+            <Users className="absolute left-3 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
             <select
               {...register('passengers', { valueAsNumber: true })}
-              className="w-full pl-10 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all appearance-none"
+              className="w-full pl-11 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all appearance-none"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
                 <option key={num} value={num}>
@@ -376,22 +376,22 @@ export default function CombinedSearchForm() {
         {/* Check-in and Check-out */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
-            <Calendar className="absolute left-2 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+            <Calendar className="absolute left-3 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <Input
               type="date"
               {...register('checkIn')}
-              className="pl-8 sm:pl-10 bg-white/90 text-gray-800"
+              className="pl-9 sm:pl-10 bg-white/90 text-gray-800"
             />
             {errors.checkIn && (
               <p className="text-red-500 text-sm mt-1">{errors.checkIn.message}</p>
             )}
           </div>
           <div className="relative">
-            <Calendar className="absolute left-2 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+            <Calendar className="absolute left-3 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <Input
               type="date"
               {...register('checkOut')}
-              className="pl-8 sm:pl-10 bg-white/90 text-gray-800"
+              className="pl-9 sm:pl-10 bg-white/90 text-gray-800"
             />
             {errors.checkOut && (
               <p className="text-red-500 text-sm mt-1">{errors.checkOut.message}</p>
@@ -402,10 +402,10 @@ export default function CombinedSearchForm() {
         {/* Guests and Rooms */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="relative">
-            <Users className="absolute left-2 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+            <Users className="absolute left-3 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <select
               {...register('guests', { valueAsNumber: true })}
-              className="w-full pl-8 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
+              className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
                 <option key={num} value={num}>
@@ -418,10 +418,10 @@ export default function CombinedSearchForm() {
             )}
           </div>
           <div className="relative">
-            <Building className="absolute left-2 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+            <Building className="absolute left-3 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <select
               {...register('rooms', { valueAsNumber: true })}
-              className="w-full pl-8 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
+              className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
             >
               {[1, 2, 3, 4, 5].map(num => (
                 <option key={num} value={num}>

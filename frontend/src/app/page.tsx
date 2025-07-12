@@ -50,7 +50,7 @@ export default function Home() {
     {
       icon: Clock,
       title: 'Real-time Data',
-      description: 'Live pricing and availability from Amadeus APIs'
+      description: 'Live pricing and availability from trusted sources'
     },
     {
       icon: Shield,
@@ -71,10 +71,10 @@ export default function Home() {
                 <TypewriterEffectHero />
               </div>
               <p className="text-xl md:text-2xl mb-4 opacity-90 text-yellow-900">
-                Your Gateway to Amazing Travel Experiences
+                Unlock The World With Bells
               </p>
               <p className="text-lg mb-8 opacity-80 text-yellow-800">
-                Crafted by Bells with 15+ years of expertise in creating unforgettable journeys
+                Crafted by Bells with 5+ years of expertise in creating unforgettable journeys
               </p>
             </div>
             
@@ -94,7 +94,7 @@ export default function Home() {
               Everything You Need to Travel
             </h2>
             <p className="text-xl text-gray-600">
-              Comprehensive travel services powered by Amadeus APIs
+              Comprehensive travel services for all your Travel needs
             </p>
           </div>
           

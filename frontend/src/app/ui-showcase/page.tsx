@@ -186,7 +186,7 @@ export default function UIShowcase() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">UI Component Showcase</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            A demonstration of custom UI components created for the Amadeus Travel Platform
+            A demonstration of custom UI components created for the Holidays Travel Platform
           </p>
         </div>
         

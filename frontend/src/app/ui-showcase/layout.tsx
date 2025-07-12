@@ -1,8 +1,8 @@
 import React from 'react'
 
 export const metadata = {
-  title: 'UI Component Showcase | Amadeus Travel Platform',
-  description: 'Demonstration of custom UI components for the Amadeus Travel Platform',
+  title: 'UI Component Showcase | Holidays Travel Platform',
+  description: 'Demonstration of custom UI components for the Holidays Travel Platform',
 }
 
 export default function UIShowcaseLayout({
