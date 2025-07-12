@@ -79,7 +79,7 @@ export default function EnhancedSearchInput({
     <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
 
   return (
-    <div ref={containerRef} className={`relative enhanced-search-input ${className}`}>
+    <div ref={containerRef} className={`relative enhanced-search-input ${showSuggestions ? 'z-[9998]' : ''} ${className}`}>
       {/* Input Container */}
       <div className="relative">
         <div

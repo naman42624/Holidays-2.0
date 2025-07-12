@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { MapPin, Plane, Clock, Search, X } from 'lucide-react'
+import { MapPin, Plane, Clock, X } from 'lucide-react'
 import { Location } from '@/types'
 
 interface SearchSuggestionsProps {
@@ -81,35 +81,44 @@ export default function SearchSuggestions({
     }
   }, [isVisible, onClose])
 
-  const getIcon = (location: Location) => {
-    if (location.type === 'AIRPORT' || location.iataCode) {
-      return <Plane className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500" />
+  const getIcon = () => {
+    if (searchType === 'flights') {
+      return <Plane className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500" />
+    } else {
+      return <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
     }
-    return <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
   }
 
-  const getLocationTypeBadge = (location: Location) => {
-    const type = location.type || 'CITY'
-    const colorMap: { [key: string]: string } = {
-      AIRPORT: 'bg-amber-100 text-amber-800',
-      CITY: 'bg-green-100 text-green-800',
-      HOTEL: 'bg-purple-100 text-purple-800',
-      POI: 'bg-orange-100 text-orange-800',
+  const getLocationTypeBadge = () => {
+    if (searchType === 'flights') {
+      return (
+        <span className="px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">
+          AIRPORT
+        </span>
+      )
+    } else {
+      return (
+        <span className="px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+          CITY
+        </span>
+      )
     }
-    
-    return (
-      <span className={`px-2 py-0.5 rounded text-xs font-medium ${colorMap[type] || 'bg-gray-100 text-gray-800'}`}>
-        {type}
-      </span>
-    )
   }
 
   const formatSubtext = (location: Location) => {
-    const parts = []
-    if (location.city) parts.push(location.city)
-    if (location.country) parts.push(location.country)
-    if (location.iataCode) parts.push(`(${location.iataCode})`)
-    return parts.join(', ')
+    if (searchType === 'flights') {
+      // For flights, show city and country with IATA code
+      const parts = []
+      if (location.city) parts.push(location.city)
+      if (location.country) parts.push(location.country)
+      if (location.iataCode) parts.push(`(${location.iataCode})`)
+      return parts.join(', ')
+    } else {
+      // For hotels and activities, show country only
+      const parts = []
+      if (location.country) parts.push(location.country)
+      return parts.join(', ')
+    }
   }
 
   return (
@@ -121,14 +130,18 @@ export default function SearchSuggestions({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
           transition={{ duration: 0.2, ease: 'easeOut' }}
-          className={`absolute top-full left-0 right-0 bg-white border-2 border-gray-200 rounded-xl shadow-xl z-50 max-h-96 overflow-y-auto mt-2 min-w-[300px] sm:min-w-[500px] ${className}`}
+          className={`absolute top-full left-0 right-0 bg-white border-2 border-gray-200 rounded-xl shadow-xl z-[9999] max-h-96 overflow-y-auto mt-2 min-w-[300px] sm:min-w-[500px] ${className}`}
         >
           {/* Header */}
           <div className="flex items-center justify-between p-3 border-b border-gray-100 bg-gray-50">
             <div className="flex items-center space-x-2">
-              <Search className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+              {searchType === 'flights' ? (
+                <Plane className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500" />
+              ) : (
+                <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-green-500" />
+              )}
               <span className="text-sm font-medium text-gray-700">
-                {suggestions.length} suggestion{suggestions.length !== 1 ? 's' : ''} found
+                {suggestions.length} {searchType === 'flights' ? 'airport' : 'city'}{suggestions.length !== 1 ? 's' : ''} found
               </span>
             </div>
             <button
@@ -159,7 +172,7 @@ export default function SearchSuggestions({
               >
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0 mt-0.5">
-                    {getIcon(location)}
+                    {getIcon()}
                   </div>
                   
                   <div className="flex-1 min-w-0">
@@ -167,7 +180,7 @@ export default function SearchSuggestions({
                       <div className="font-semibold text-gray-900 text-sm">
                         {location.name}
                       </div>
-                      {getLocationTypeBadge(location)}
+                      {getLocationTypeBadge()}
                     </div>
                     
                     <div className="text-xs text-gray-600">

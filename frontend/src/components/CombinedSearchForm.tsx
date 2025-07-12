@@ -158,7 +158,11 @@ export default function CombinedSearchForm() {
           )
           
           if (response.data.success && response.data.data) {
-            setLocationSuggestions(response.data.data)
+            // Filter to ensure only airports are returned
+            const airportResults = response.data.data.filter(location => 
+              location.type === 'AIRPORT' || location.iataCode
+            )
+            setLocationSuggestions(airportResults)
             return
           }
         } catch {
@@ -172,7 +176,11 @@ export default function CombinedSearchForm() {
           )
           
           if (response.data.success && response.data.data) {
-            setLocationSuggestions(response.data.data)
+            // Filter to ensure only cities are returned
+            const cityResults = response.data.data.filter(location => 
+              location.type === 'CITY' || (!location.iataCode && location.city)
+            )
+            setLocationSuggestions(cityResults)
             return
           }
         } catch {
@@ -203,12 +211,22 @@ export default function CombinedSearchForm() {
       }
       
       // Fallback to API search if no results from database
+      // Use specific subType based on search type
+      const subType = searchType === 'flights' ? 'AIRPORT' : 'CITY'
       const response = await api.get<ApiResponse<Location[]>>(
-        `${endpoints.locations.search}?keyword=${encodeURIComponent(query)}&subType=AIRPORT,CITY&limit=5`
+        `${endpoints.locations.search}?keyword=${encodeURIComponent(query)}&subType=${subType}&limit=5`
       )
       
       if (response.data.success && response.data.data) {
-        setLocationSuggestions(response.data.data)
+        // Filter results to ensure only correct types are returned
+        const filteredResults = response.data.data.filter(location => {
+          if (searchType === 'flights') {
+            return location.type === 'AIRPORT' || location.iataCode
+          } else {
+            return location.type === 'CITY' || (!location.iataCode && location.city)
+          }
+        })
+        setLocationSuggestions(filteredResults)
       }
     } catch (error) {
       console.error('Location search error:', error)
@@ -575,13 +593,13 @@ export default function CombinedSearchForm() {
   }
 
   return (
-    <Card className="search-form-container w-full max-w-4xl mx-auto shadow-xl hover:shadow-2xl border-0 overflow-hidden transition-all duration-300 relative z-10">
-      <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-100">
+    <Card className="search-form-container w-full max-w-4xl mx-auto shadow-xl hover:shadow-2xl border-0 transition-all duration-300 relative z-20">
+      <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-100 rounded-t-lg">
         <CardTitle className="text-2xl font-bold text-center text-gray-800">
           Search & Book Your Perfect Trip
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6">
+      <CardContent className="p-6 rounded-b-lg">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Search Type Tabs */}
           <div className="flex flex-wrap border-b border-gray-200">

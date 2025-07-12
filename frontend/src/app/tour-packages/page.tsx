@@ -73,8 +73,8 @@ export default function TourPackagesPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6">
           <div className="max-w-md mx-auto">
             <div className="relative flex items-center w-full">
               <input
@@ -124,7 +124,7 @@ export default function TourPackagesPage() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filteredPackages.map((pkg) => (
               <TourPackage3DCard
                 key={pkg._id}

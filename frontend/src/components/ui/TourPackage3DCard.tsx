@@ -36,7 +36,7 @@ export default function TourPackage3DCard({
   const trimmedLocation = trimText(location, 18);
 
   return (
-    <CardContainer className="inter-var py-8">
+    <CardContainer className="inter-var py-3">
       <CardBody className="bg-white relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-gray-950 dark:border-white/[0.2] border-gray-200 w-[380px] h-[520px] rounded-xl p-6 border shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
         
         {/* Popular Badge */}
