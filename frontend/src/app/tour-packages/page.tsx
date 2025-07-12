@@ -54,7 +54,7 @@ export default function TourPackagesPage() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="relative bg-blue-700 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-amber-600 via-amber-700 to-amber-800 overflow-hidden">
         <div className="absolute inset-0">
           <Image 
             src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" 
@@ -67,7 +67,7 @@ export default function TourPackagesPage() {
           <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl lg:text-6xl">
             Discover Our Tour Packages
           </h1>
-          <p className="mt-6 max-w-3xl text-xl text-blue-100">
+          <p className="mt-6 max-w-3xl text-xl text-amber-100">
             Explore our carefully curated selection of tour packages, designed to provide unforgettable experiences around the world.
           </p>
         </div>
@@ -82,7 +82,7 @@ export default function TourPackagesPage() {
                 placeholder="Search tour packages..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-2 sm:py-3 pl-10 sm:pl-12 pr-4 border border-gray-300 rounded-full focus:ring-blue-500 focus:border-blue-500 block text-sm sm:text-base"
+                className="w-full py-2 sm:py-3 pl-10 sm:pl-12 pr-4 border border-gray-300 rounded-full focus:ring-amber-500 focus:border-amber-500 block text-sm sm:text-base"
               />
               <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -95,7 +95,7 @@ export default function TourPackagesPage() {
 
         {loading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-amber-500"></div>
           </div>
         ) : error ? (
           <div className="text-center py-12">
@@ -106,7 +106,7 @@ export default function TourPackagesPage() {
             <p className="mt-2 text-base text-gray-500">{error}</p>
             <button
               onClick={fetchTourPackages}
-              className="mt-4 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="mt-4 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
             >
               Try Again
             </button>

@@ -32,30 +32,15 @@ export default function TourPackageDetails({ params }: TourPackageDetailsProps) 
   const [tourPackage, setTourPackage] = useState<TourPackage | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const isValidImageUrl = (url: string): boolean => {
-    try {
-      const urlObj = new URL(url);
-      const allowedDomains = [
-        'images.unsplash.com',
-        'via.placeholder.com',
-        'encrypted-tbn3.gstatic.com',
-        'localhost'
-      ];
-      
-      return allowedDomains.includes(urlObj.hostname) || 
-             urlObj.hostname.endsWith('.amazonaws.com') ||
-             urlObj.hostname.includes('unsplash.com') ||
-             urlObj.hostname.includes('placeholder.com');
-    } catch {
-      return false;
-    }
-  };
+  const [imageError, setImageError] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
 
   const fetchTourPackage = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
+      setImageError(false);
+      setImageLoading(true);
       const response = await api.get(endpoints.tourPackages.details(id));
 
       if (response.data && response.data.success) {
@@ -80,7 +65,7 @@ export default function TourPackageDetails({ params }: TourPackageDetailsProps) 
       <PageTransition>
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-amber-500 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading tour package details...</p>
           </div>
         </div>
@@ -145,7 +130,7 @@ export default function TourPackageDetails({ params }: TourPackageDetailsProps) 
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Tour Packages
               </Link>
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+              <Button size="lg" className="bg-amber-600 hover:bg-amber-700">
                 Book Now - ₹{tourPackage.price.toLocaleString()}
               </Button>
             </div>
@@ -154,19 +139,39 @@ export default function TourPackageDetails({ params }: TourPackageDetailsProps) 
 
         {/* Hero Section */}
         <div className="relative h-96 md:h-[500px] overflow-hidden">
-          {isValidImageUrl(tourPackage.imageUrl) ? (
-            <Image 
-              src={tourPackage.imageUrl} 
-              alt={tourPackage.title}
-              fill
-              className="object-cover"
-              priority
-            />
+          {!imageError && tourPackage.imageUrl ? (
+            <>
+              <Image 
+                src={tourPackage.imageUrl} 
+                alt={tourPackage.title}
+                fill
+                className="object-cover"
+                priority
+                onLoad={() => {
+                  console.log('Image loaded successfully:', tourPackage.imageUrl);
+                  setImageLoading(false);
+                }}
+                onError={() => {
+                  console.log('Image failed to load:', tourPackage.imageUrl);
+                  setImageError(true);
+                  setImageLoading(false);
+                }}
+                sizes="100vw"
+              />
+              {imageLoading && (
+                <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
+                  <div className="text-gray-500">Loading image...</div>
+                </div>
+              )}
+            </>
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <div className="w-full h-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center">
               <div className="text-center text-white">
                 <Camera className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 <h1 className="text-4xl md:text-5xl font-bold">{tourPackage.title}</h1>
+                {imageError && (
+                  <p className="text-sm mt-2 opacity-75">Image failed to load: {tourPackage.imageUrl}</p>
+                )}
               </div>
             </div>
           )}
@@ -174,7 +179,7 @@ export default function TourPackageDetails({ params }: TourPackageDetailsProps) 
           <div className="absolute bottom-0 left-0 right-0 p-8">
             <div className="max-w-7xl mx-auto">
               <div className="flex items-center space-x-4 mb-4">
-                <Badge className="bg-white text-blue-600 font-semibold">
+                <Badge className="bg-white text-amber-600 font-semibold">
                   {tourPackage.duration}
                 </Badge>
                 <Badge className="bg-white text-green-600 font-semibold">
@@ -292,10 +297,10 @@ export default function TourPackageDetails({ params }: TourPackageDetailsProps) 
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Booking Card */}
-              <Card className="sticky top-24">
+              <Card className="sticky top-24 z-20 bg-white shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-center">
-                    <span className="text-3xl font-bold text-blue-600">
+                    <span className="text-3xl font-bold text-amber-600">
                       ₹{tourPackage.price.toLocaleString()}
                     </span>
                     <span className="text-sm text-gray-500 ml-2">per person</span>
@@ -318,10 +323,10 @@ export default function TourPackageDetails({ params }: TourPackageDetailsProps) 
                   </div>
                   
                   <div className="border-t pt-4">
-                    <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 mb-3">
+                    <Button size="lg" className="w-full bg-amber-600 hover:bg-amber-700 mb-3">
                       Book Now
                     </Button>
-                    <Button size="lg" variant="outline" className="w-full">
+                    <Button size="lg" variant="outline" className="w-full border-amber-600 text-amber-600 hover:bg-amber-50">
                       Contact Us
                     </Button>
                   </div>
@@ -333,7 +338,7 @@ export default function TourPackageDetails({ params }: TourPackageDetailsProps) 
               </Card>
 
               {/* Customer Reviews */}
-              <Card>
+              <Card className="bg-white shadow-lg relative z-10">
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Star className="w-5 h-5 mr-2 text-yellow-400" />
