@@ -60,6 +60,12 @@ router.get(
  */
 router.patch(
   '/:id/toggle-publish', 
+  (req, res, next) => {
+    console.log('Toggle publish route hit!', req.params.id);
+    console.log('Headers:', req.headers);
+    console.log('Method:', req.method);
+    next();
+  },
   authenticateToken, 
   isContentEditor, 
   tourPackageController.togglePublishStatus.bind(tourPackageController)

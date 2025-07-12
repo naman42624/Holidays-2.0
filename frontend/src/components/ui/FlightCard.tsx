@@ -326,7 +326,7 @@ export default function FlightCard({ flight, index, onSelect }: FlightCardProps)
                 console.log('Calling onSelect with flight:', flight.id)
                 onSelect(flight)
               }}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
+              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
             >
               Select Flight
             </Button>

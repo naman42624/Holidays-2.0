@@ -203,6 +203,26 @@ div:focus-within {
   hyphens: auto;
 }
 
+/* Ensure search form shadow persists during focus states */
+.search-form-container {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  transition: all 0.3s ease;
+}
+
+.search-form-container:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+}
+
+.search-form-container:focus-within {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Ensure input focus states don't interfere with container styles */
+.search-form-container input:focus,
+.search-form-container select:focus {
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
+}
+
 /* Responsive typography and spacing */
 .text-responsive {
   font-size: 0.875rem; /* 14px */
@@ -280,34 +300,4 @@ div:focus-within {
     min-height: 44px; /* Apple's recommended touch target size */
     min-width: 44px;
   }
-}
-.line-clamp-1 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
-}
-
-.line-clamp-2 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-}
-
-.line-clamp-3 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-}
-
-/* Prevent text overflow in cards */
-.text-overflow-safe {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
 }

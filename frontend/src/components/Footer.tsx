@@ -22,7 +22,7 @@ export default function Footer() {
               />
             </div>
             <p className="text-gray-300 mb-6 max-w-md">
-              Crafting unforgettable travel experiences for over 15 years. From dream destinations to seamless bookings, we&apos;re your trusted travel partner.
+              Crafting unforgettable travel experiences for over 5 years. From dream destinations to seamless bookings, we&apos;re your trusted travel partner.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-yellow-400 transition-colors">

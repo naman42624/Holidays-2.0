@@ -2,7 +2,6 @@
 
 import React from "react";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Star, Clock, Users } from "lucide-react";
 import { TourPackage } from "@/types/tourPackage";
@@ -11,12 +10,10 @@ import Image from "next/image";
 
 interface TourPackage3DCardProps {
   tourPackage: TourPackage;
-  onSelect?: (tourPackage: TourPackage) => void;
 }
 
 export default function TourPackage3DCard({ 
-  tourPackage, 
-  onSelect
+  tourPackage
 }: TourPackage3DCardProps) {
   const discount = tourPackage.originalPrice 
     ? Math.round(((tourPackage.originalPrice - tourPackage.price) / tourPackage.originalPrice) * 100)
@@ -34,13 +31,13 @@ export default function TourPackage3DCard({
     return text.length > maxLength ? text.substring(0, maxLength).trim() + '...' : text;
   };
 
-  const trimmedTitle = trimText(tourPackage.title, 50);
-  const trimmedDescription = trimText(tourPackage.description, 100);
-  const trimmedLocation = trimText(location, 20);
+  const trimmedTitle = trimText(tourPackage.title, 45);
+  const trimmedDescription = trimText(tourPackage.description, 90);
+  const trimmedLocation = trimText(location, 18);
 
   return (
     <CardContainer className="inter-var py-8">
-      <CardBody className="bg-white relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-gray-950 dark:border-white/[0.2] border-gray-200 w-full max-w-[380px] h-[520px] rounded-xl p-6 border shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+      <CardBody className="bg-white relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-gray-950 dark:border-white/[0.2] border-gray-200 w-[380px] h-[520px] rounded-xl p-6 border shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
         
         {/* Popular Badge */}
         {tourPackage.isPopular && (
@@ -69,9 +66,9 @@ export default function TourPackage3DCard({
         {/* Title */}
         <CardItem
           translateZ="50"
-          className="text-xl font-bold text-neutral-800 dark:text-white h-[56px] flex items-start"
+          className="text-xl font-bold text-neutral-800 dark:text-white h-[60px] flex items-start overflow-hidden"
         >
-          {trimmedTitle}
+          <span className="overflow-hidden text-ellipsis leading-tight">{trimmedTitle}</span>
         </CardItem>
 
         {/* Location and Rating */}
@@ -94,9 +91,9 @@ export default function TourPackage3DCard({
         <CardItem
           as="p"
           translateZ="60"
-          className="text-neutral-600 text-sm mt-3 dark:text-neutral-300 h-[48px] flex items-start"
+          className="text-neutral-600 text-sm mt-3 dark:text-neutral-300 h-[50px] flex items-start overflow-hidden"
         >
-          {trimmedDescription}
+          <span className="overflow-hidden text-ellipsis leading-tight">{trimmedDescription}</span>
         </CardItem>
 
         {/* Image */}
@@ -140,13 +137,13 @@ export default function TourPackage3DCard({
               <Badge 
                 key={index} 
                 variant="outline" 
-                className="text-xs px-2 py-1 bg-blue-50 text-blue-700 border-blue-200"
+                className="text-xs px-2 py-1 bg-amber-50 text-amber-700 border-amber-200"
               >
                 {trimText(highlight, 12)}
               </Badge>
             ))}
             {highlights.length > 3 && (
-              <Badge variant="outline" className="text-xs px-2 py-1">
+              <Badge variant="outline" className="text-xs px-2 py-1 bg-amber-50 text-amber-700 border-amber-200">
                 +{highlights.length - 3}
               </Badge>
             )}
@@ -169,24 +166,14 @@ export default function TourPackage3DCard({
             <span className="text-xs text-gray-500">per person</span>
           </CardItem>
 
-          <div className="flex space-x-2">
-            <CardItem
-              translateZ={20}
-              as={Link}
-              href={`/tour-packages/${tourPackage._id}`}
-              className="px-3 py-2 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors inline-flex items-center"
-            >
-              View Details
-            </CardItem>
-            <CardItem
-              translateZ={20}
-              as={Button}
-              onClick={() => onSelect?.(tourPackage)}
-              className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors"
-            >
-              Book Now
-            </CardItem>
-          </div>
+          <CardItem
+            translateZ={20}
+            as={Link}
+            href={`/tour-packages/${tourPackage._id}`}
+            className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-sm font-bold transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
+          >
+            View Details
+          </CardItem>
         </div>
       </CardBody>
     </CardContainer>

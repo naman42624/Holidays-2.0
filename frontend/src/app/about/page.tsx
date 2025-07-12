@@ -24,7 +24,7 @@ export default function AboutPage() {
     {
       name: "Bells Founder",
       position: "Founder & CEO",
-      description: "With over 15 years in the travel industry, our founder started Holidays by Bells with a vision to make travel accessible and memorable for everyone."
+      description: "With over 5 years in the travel industry, our founder started Holidays by Bells with a vision to make travel accessible and memorable for everyone."
     },
     {
       name: "Travel Experts",

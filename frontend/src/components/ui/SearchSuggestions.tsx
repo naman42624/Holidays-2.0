@@ -91,7 +91,7 @@ export default function SearchSuggestions({
   const getLocationTypeBadge = (location: Location) => {
     const type = location.type || 'CITY'
     const colorMap: { [key: string]: string } = {
-      AIRPORT: 'bg-blue-100 text-blue-800',
+      AIRPORT: 'bg-amber-100 text-amber-800',
       CITY: 'bg-green-100 text-green-800',
       HOTEL: 'bg-purple-100 text-purple-800',
       POI: 'bg-orange-100 text-orange-800',
@@ -151,10 +151,10 @@ export default function SearchSuggestions({
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.2, delay: index * 0.05 }}
-                className={`w-full px-4 py-3 text-left hover:bg-blue-50 transition-all duration-150 border-l-2 ${
+                className={`w-full px-4 py-3 text-left hover:bg-amber-50 transition-all duration-150 border-l-2 ${
                   selectedIndex === index
-                    ? 'bg-blue-50 border-blue-500'
-                    : 'border-transparent hover:border-blue-200'
+                    ? 'bg-amber-50 border-amber-500'
+                    : 'border-transparent hover:border-amber-200'
                 }`}
               >
                 <div className="flex items-start space-x-3">

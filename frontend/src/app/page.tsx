@@ -87,9 +87,9 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20">
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Everything You Need to Travel
             </h2>
@@ -104,15 +104,15 @@ export default function Home() {
               return (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardHeader className="text-center">
-                    <div className="mx-auto w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-blue-600" />
+                    <div className="mx-auto w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-amber-600" />
                     </div>
                     <CardTitle>{feature.title}</CardTitle>
                     <CardDescription>{feature.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="text-center">
                     <Link href={feature.href}>
-                      <Button className="w-full">Get Started</Button>
+                      <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white">Get Started</Button>
                     </Link>
                   </CardContent>
                 </Card>
@@ -123,10 +123,10 @@ export default function Home() {
       </section>
 
       {/* Featured Tour Packages Section */}
-      <section className="bg-gray-50 py-20">
+      <section className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               Featured Tour Packages
             </h2>
             <p className="text-xl text-gray-600">
@@ -155,16 +155,12 @@ export default function Home() {
                   <TourPackage3DCard
                     key={pkg._id}
                     tourPackage={pkg}
-                    onSelect={(tourPackage) => {
-                      // Handle booking logic here
-                      console.log('Book tour package:', tourPackage);
-                    }}
                   />
                 ))}
               </div>
               <div className="text-center mt-12">
                 <Link href="/tour-packages">
-                  <Button size="lg" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
+                  <Button size="lg" variant="outline" className="text-amber-600 border-amber-600 hover:bg-amber-50">
                     View All Tour Packages
                   </Button>
                 </Link>
@@ -185,9 +181,9 @@ export default function Home() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20">
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Why Choose Our Platform?
             </h2>
@@ -218,9 +214,9 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20">
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               What Our Travelers Say
             </h2>
@@ -237,13 +233,13 @@ export default function Home() {
                 ))}
               </div>
               <p className="text-gray-600 mb-4">
-                &quot;Holidays by Bells made our dream vacation to Japan absolutely perfect. Every detail was handled with care and professionalism.&quot;
+                &quot;Holidays by Bells made our family trip to Dubai absolutely amazing! The kids loved the desert safari and we enjoyed every moment. Excellent planning and support throughout.&quot;
               </p>
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
                 <div>
-                  <p className="font-semibold text-gray-900">Sarah Johnson</p>
-                  <p className="text-sm text-gray-500">New York, USA</p>
+                  <p className="font-semibold text-gray-900">Priya Sharma</p>
+                  <p className="text-sm text-gray-500">Mumbai, India</p>
                 </div>
               </div>
             </Card>
@@ -255,13 +251,13 @@ export default function Home() {
                 ))}
               </div>
               <p className="text-gray-600 mb-4">
-                &quot;Outstanding service! The team went above and beyond to ensure our honeymoon in Bali was unforgettable. Highly recommended!&quot;
+                &quot;Outstanding service! Our honeymoon in Bali was like a dream come true. The team handled everything from flights to resort bookings perfectly. Highly recommended!&quot;
               </p>
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
                 <div>
-                  <p className="font-semibold text-gray-900">Mike & Emma Davis</p>
-                  <p className="text-sm text-gray-500">London, UK</p>
+                  <p className="font-semibold text-gray-900">Rahul & Anjali Patel</p>
+                  <p className="text-sm text-gray-500">Ahmedabad, India</p>
                 </div>
               </div>
             </Card>
@@ -273,13 +269,13 @@ export default function Home() {
                 ))}
               </div>
               <p className="text-gray-600 mb-4">
-                &quot;15 years of experience really shows! From booking to return, everything was seamless. Best travel agency we&apos;ve ever used.&quot;
+                &quot;The Ladakh trip was incredible! From the breathtaking landscapes to the comfortable accommodations, everything was perfect. Best travel experience we&apos;ve had.&quot;
               </p>
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
                 <div>
-                  <p className="font-semibold text-gray-900">Robert Chen</p>
-                  <p className="text-sm text-gray-500">Toronto, Canada</p>
+                  <p className="font-semibold text-gray-900">Vikram Singh</p>
+                  <p className="text-sm text-gray-500">Delhi, India</p>
                 </div>
               </div>
             </Card>
@@ -288,9 +284,9 @@ export default function Home() {
       </section>
 
       {/* Travel Information & Tips Section */}
-      <section className="bg-gray-50 py-20">
+      <section className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Travel Smart with Expert Guidance
             </h2>
@@ -409,22 +405,22 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-blue-600 text-white py-20">
+      <section className="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Ready to Start Your Journey?
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <p className="text-xl text-amber-100 mb-8">
             Join thousands of travelers who trust our platform
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/register">
-              <Button size="lg" variant="outline" className="text-blue-600">
+              <Button size="lg" variant="outline" className="text-amber-600 border-white hover:bg-white hover:text-amber-600">
                 Sign Up Free
               </Button>
             </Link>
             <Link href="/flights">
-              <Button size="lg" variant="secondary">
+              <Button size="lg" className="bg-white text-amber-600 hover:bg-amber-50">
                 Start Searching
               </Button>
             </Link>

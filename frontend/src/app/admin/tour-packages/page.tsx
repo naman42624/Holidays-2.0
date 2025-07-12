@@ -26,6 +26,15 @@ export default function TourPackagesAdmin() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft'>('all');
 
+  // Quick auth check
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    const userData = localStorage.getItem('user');
+    console.log('Auth Check - Token:', token ? 'Present' : 'Missing');
+    console.log('Auth Check - User:', userData ? JSON.parse(userData) : 'Missing');
+    console.log('Auth Check - User from context:', user);
+  }, [user]);
+
   // Helper function to validate image URLs
   const isValidImageUrl = (url: string): boolean => {
     try {
@@ -81,9 +90,16 @@ export default function TourPackagesAdmin() {
 
   const handleTogglePublish = async (packageId: string, currentStatus: boolean) => {
     try {
-      await api.patch(`/tour-packages/${packageId}`, {
-        isPublished: !currentStatus
-      });
+      console.log('Toggling publish for package:', packageId);
+      console.log('Current status:', currentStatus);
+      console.log('Auth token:', localStorage.getItem('authToken') ? 'Present' : 'Missing');
+      
+      const endpoint = endpoints.tourPackages.admin.togglePublish(packageId);
+      console.log('Calling endpoint:', endpoint);
+      console.log('Full URL:', `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api'}${endpoint}`);
+      
+      const response = await api.patch(endpoint);
+      console.log('Toggle response:', response.data);
       
       // Update the local state
       setTourPackages(prevPackages =>
@@ -91,16 +107,39 @@ export default function TourPackagesAdmin() {
           pkg._id === packageId ? { ...pkg, isPublished: !currentStatus } : pkg
         )
       );
-    } catch (error) {
+      
+      alert(`Package ${!currentStatus ? 'published' : 'unpublished'} successfully!`);
+    } catch (error: unknown) {
       console.error('Error toggling publish status:', error);
-      alert('Failed to update package status');
+      
+      // Type-safe error handling
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: unknown; status?: number } };
+        console.error('Error response:', axiosError.response?.data);
+        console.error('Error status:', axiosError.response?.status);
+      }
+      
+      // More detailed error message
+      let errorMessage = 'Failed to update package status';
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { status?: number; data?: { error?: string } } };
+        if (axiosError.response?.status === 401) {
+          errorMessage = 'Authentication required. Please login again.';
+        } else if (axiosError.response?.status === 403) {
+          errorMessage = 'Access denied. Admin privileges required.';
+        } else if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        }
+      }
+      
+      alert(errorMessage);
     }
   };
 
   const handleDelete = async (packageId: string, title: string) => {
     if (window.confirm(`Are you sure you want to delete "${title}"? This action cannot be undone.`)) {
       try {
-        await api.delete(`/tour-packages/${packageId}`);
+        await api.delete(endpoints.tourPackages.admin.delete(packageId));
         setTourPackages(prevPackages => prevPackages.filter(pkg => pkg._id !== packageId));
       } catch (error) {
         console.error('Error deleting package:', error);
@@ -258,7 +297,7 @@ export default function TourPackagesAdmin() {
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="divide-y divide-gray-200">
             {filteredPackages.map((pkg) => (
-              <div key={pkg._id} className="p-6">
+              <div key={pkg._id} className="p-6" data-package-id={pkg._id}>
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-4 flex-1">
                     <div className="flex-shrink-0">

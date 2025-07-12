@@ -5,21 +5,22 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
-import { Map, User, LogOut, Menu, Grid, Info, Phone, Plane, Hotel } from 'lucide-react'
+import { User, LogOut, Menu } from 'lucide-react'
 
 export default function Navigation() {
   const { user, logout } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
-  const navigation = [
-    { name: 'Flights', href: '/flights', icon: Plane },
-    { name: 'Hotels', href: '/hotels', icon: Hotel },
-    { name: 'Activities', href: '/activities', icon: Map },
-    { name: 'Tour Packages', href: '/tour-packages', icon: Map },
-    { name: 'Services', href: '/services', icon: Grid },
-    { name: 'About', href: '/about', icon: Info },
-    { name: 'Contact', href: '/contact', icon: Phone },
-  ]
+  // const navigation = [
+  //   { name: 'Flights', href: '/flights', icon: Plane },
+  //   { name: 'Hotels', href: '/hotels', icon: Hotel },
+  //   { name: 'Activities', href: '/activities', icon: Map },
+  //   { name: 'Tour Packages', href: '/tour-packages', icon: Map },
+  //   { name: 'Services', href: '/services', icon: Grid },
+  //   { name: 'About', href: '/about', icon: Info },
+  //   { name: 'Contact', href: '/contact', icon: Phone },
+  // ]
+  const navigation = []
 
   // Add test page link in development
   const isDev = process.env.NODE_ENV === 'development'
@@ -33,7 +34,7 @@ export default function Navigation() {
   const hasAdminAccess = user && ['admin', 'super-admin', 'website-editor'].includes(user.role)
 
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <nav className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo and primary navigation */}
@@ -56,7 +57,7 @@ export default function Navigation() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors"
                   >
                     <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                     <span className="hidden lg:inline">{item.name}</span>
@@ -75,7 +76,7 @@ export default function Navigation() {
                 </span>
                 {hasAdminAccess && (
                   <Link href="/admin">
-                    <Button variant="outline" size="sm" className="text-blue-700 border-blue-700 hover:bg-blue-50">
+                    <Button variant="outline" size="sm" className="text-amber-700 border-amber-700 hover:bg-amber-50">
                       Admin Portal
                     </Button>
                   </Link>
@@ -94,10 +95,10 @@ export default function Navigation() {
             ) : (
               <div className="flex items-center space-x-4">
                 <Link href="/auth/login">
-                  <Button variant="ghost">Login</Button>
+                  <Button variant="ghost" className="hover:bg-amber-50 hover:text-amber-600">Login</Button>
                 </Link>
                 <Link href="/auth/register">
-                  <Button>Sign up</Button>
+                  <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600">Sign up</Button>
                 </Link>
               </div>
             )}
@@ -146,7 +147,7 @@ export default function Navigation() {
                 {hasAdminAccess && (
                   <Link
                     href="/admin"
-                    className="flex items-center px-3 py-2 text-base font-medium text-blue-700 hover:bg-blue-50"
+                    className="flex items-center px-3 py-2 text-base font-medium text-amber-700 hover:bg-amber-50"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -129,10 +129,6 @@ export default function TourPackagesPage() {
               <TourPackage3DCard
                 key={pkg._id}
                 tourPackage={pkg}
-                onSelect={(tourPackage) => {
-                  // Handle booking logic here
-                  console.log('Book tour package:', tourPackage);
-                }}
               />
             ))}
           </div>

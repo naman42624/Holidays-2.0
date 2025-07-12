@@ -87,7 +87,7 @@ export default function EnhancedSearchInput({
             error
               ? 'border-red-300 bg-red-50'
               : isFocused
-              ? 'border-gray-400 bg-white shadow-sm'
+              ? 'border-amber-500 bg-white shadow-sm ring-2 ring-amber-200'
               : 'border-gray-300 bg-white hover:border-gray-400'
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
@@ -125,7 +125,7 @@ export default function EnhancedSearchInput({
                 transition={{ duration: 0.15 }}
                 className="flex-shrink-0 flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10"
               >
-                <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500 animate-spin" />
+                <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500 animate-spin" />
               </motion.div>
             )}
           </AnimatePresence>

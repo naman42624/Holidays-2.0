@@ -9,6 +9,7 @@ import { format, addDays } from 'date-fns'
 import { Location, ApiResponse } from '@/types'
 import api, { endpoints } from '@/lib/api'
 import { searchAirports } from '@/data/airportDatabase'
+import { searchCities } from '@/data/citiesDatabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -113,7 +114,7 @@ export default function CombinedSearchForm() {
   ]
 
   // Location search functionality
-  const searchLocations = useCallback(async (query: string) => {
+  const searchLocations = useCallback(async (query: string, searchType: 'flights' | 'hotels' | 'activities' = 'flights') => {
     if (query.length < 2) {
       setLocationSuggestions([])
       return
@@ -125,28 +126,80 @@ export default function CombinedSearchForm() {
     }
 
     try {
-      // First try the local airport database for faster results
-      const airportResults = searchAirports(query)
-      
-      if (airportResults.length > 0) {
-        // Convert airport data to Location format
-        const locationResults: Location[] = airportResults.map(airport => ({
-          id: airport.code,
-          name: airport.name,
-          detailedName: `${airport.city}, ${airport.country}`,
-          type: 'AIRPORT',
-          iataCode: airport.code,
-          city: airport.city,
-          cityCode: airport.code,
-          country: airport.country,
-          countryCode: airport.country.substring(0, 2).toUpperCase(),
-          coordinates: { latitude: 0, longitude: 0 }, // Default values
-          timeZone: 'UTC',
-          relevanceScore: 1.0
-        }))
+      if (searchType === 'flights') {
+        // For flights, search airports using the local database
+        const airportResults = searchAirports(query)
         
-        setLocationSuggestions(locationResults)
-        return
+        if (airportResults.length > 0) {
+          // Convert airport data to Location format
+          const locationResults: Location[] = airportResults.map(airport => ({
+            id: airport.code,
+            name: airport.name,
+            detailedName: `${airport.city}, ${airport.country}`,
+            type: 'AIRPORT',
+            iataCode: airport.code,
+            city: airport.city,
+            cityCode: airport.code,
+            country: airport.country,
+            countryCode: airport.country.substring(0, 2).toUpperCase(),
+            coordinates: { latitude: 0, longitude: 0 }, // Default values
+            timeZone: 'UTC',
+            relevanceScore: 1.0
+          }))
+          
+          setLocationSuggestions(locationResults)
+          return
+        }
+        
+        // If no airport results, try API search as fallback
+        try {
+          const response = await api.get<ApiResponse<Location[]>>(
+            `${endpoints.locations.search}?query=${encodeURIComponent(query)}&type=airport&limit=10`
+          )
+          
+          if (response.data.success && response.data.data) {
+            setLocationSuggestions(response.data.data)
+            return
+          }
+        } catch {
+          console.log('API search failed for flights')
+        }
+      } else {
+        // For hotels and activities, search cities using the API
+        try {
+          const response = await api.get<ApiResponse<Location[]>>(
+            `${endpoints.locations.search}?query=${encodeURIComponent(query)}&type=city&limit=10`
+          )
+          
+          if (response.data.success && response.data.data) {
+            setLocationSuggestions(response.data.data)
+            return
+          }
+        } catch {
+          console.log('API search failed, trying local search as fallback')
+          // Fallback to local cities database
+          const cityResults = searchCities(query)
+          
+          if (cityResults.length > 0) {
+            const locationResults: Location[] = cityResults.map(city => ({
+              id: city.code,
+              name: city.name,
+              detailedName: `${city.name}, ${city.country}`,
+              type: 'CITY',
+              iataCode: city.code,
+              city: city.name,
+              cityCode: city.code,
+              country: city.country,
+              countryCode: city.country.substring(0, 2).toUpperCase(),
+              coordinates: { latitude: city.latitude, longitude: city.longitude },
+              timeZone: 'UTC',
+              relevanceScore: 1.0
+            }))
+            
+            setLocationSuggestions(locationResults)
+            return
+          }
+        }
       }
       
       // Fallback to API search if no results from database
@@ -237,7 +290,7 @@ export default function CombinedSearchForm() {
               type="radio"
               value="roundtrip"
               {...register('tripType')}
-              className="text-blue-600"
+              className="text-amber-600"
             />
             <span className="text-gray-700">Round Trip</span>
           </label>
@@ -246,7 +299,7 @@ export default function CombinedSearchForm() {
               type="radio"
               value="oneway"
               {...register('tripType')}
-              className="text-blue-600"
+              className="text-amber-600"
             />
             <span className="text-gray-700">One Way</span>
           </label>
@@ -260,7 +313,7 @@ export default function CombinedSearchForm() {
               value={flightForm.watch('from') || ''}
               onChange={(value) => {
                 flightForm.setValue('from', value)
-                searchLocations(value)
+                searchLocations(value, 'flights')
               }}
               onLocationSelect={(location) => {
                 const locationValue = location.iataCode || location.name
@@ -281,7 +334,7 @@ export default function CombinedSearchForm() {
               value={flightForm.watch('to') || ''}
               onChange={(value) => {
                 flightForm.setValue('to', value)
-                searchLocations(value)
+                searchLocations(value, 'flights')
               }}
               onLocationSelect={(location) => {
                 const locationValue = location.iataCode || location.name
@@ -305,7 +358,7 @@ export default function CombinedSearchForm() {
             <Input
               type="date"
               {...register('departureDate')}
-              className="pl-11 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all"
+              className="pl-11 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 rounded-lg transition-all"
             />
             {errors.departureDate && (
               <p className="text-red-500 text-sm mt-1">{errors.departureDate.message}</p>
@@ -317,7 +370,7 @@ export default function CombinedSearchForm() {
               <Input
                 type="date"
                 {...register('returnDate')}
-                className="pl-11 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all"
+                className="pl-11 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 rounded-lg transition-all"
               />
               {errors.returnDate && (
                 <p className="text-red-500 text-sm mt-1">{errors.returnDate.message}</p>
@@ -328,7 +381,7 @@ export default function CombinedSearchForm() {
             <Users className="absolute left-3 sm:left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
             <select
               {...register('passengers', { valueAsNumber: true })}
-              className="w-full pl-11 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-gray-400 rounded-lg transition-all appearance-none"
+              className="w-full pl-11 sm:pl-12 pr-4 py-3 h-10 sm:h-12 bg-white text-gray-800 border-2 border-gray-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 rounded-lg transition-all appearance-none"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
                 <option key={num} value={num}>
@@ -357,10 +410,11 @@ export default function CombinedSearchForm() {
             value={hotelForm.watch('destination') || ''}
             onChange={(value) => {
               hotelForm.setValue('destination', value)
-              searchLocations(value)
+              searchLocations(value, 'hotels')
             }}
             onLocationSelect={(location) => {
-              const locationValue = location.iataCode || location.name
+              // For hotels, use city name instead of airport code
+              const locationValue = location.city || location.name
               hotelForm.setValue('destination', locationValue)
             }}
             suggestions={locationSuggestions}
@@ -380,7 +434,7 @@ export default function CombinedSearchForm() {
             <Input
               type="date"
               {...register('checkIn')}
-              className="pl-9 sm:pl-10 bg-white/90 text-gray-800"
+              className="pl-9 sm:pl-10 bg-white/90 text-gray-800 border-2 border-gray-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-200"
             />
             {errors.checkIn && (
               <p className="text-red-500 text-sm mt-1">{errors.checkIn.message}</p>
@@ -391,7 +445,7 @@ export default function CombinedSearchForm() {
             <Input
               type="date"
               {...register('checkOut')}
-              className="pl-9 sm:pl-10 bg-white/90 text-gray-800"
+              className="pl-9 sm:pl-10 bg-white/90 text-gray-800 border-2 border-gray-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-200"
             />
             {errors.checkOut && (
               <p className="text-red-500 text-sm mt-1">{errors.checkOut.message}</p>
@@ -405,7 +459,7 @@ export default function CombinedSearchForm() {
             <Users className="absolute left-3 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <select
               {...register('guests', { valueAsNumber: true })}
-              className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
+              className="w-full pl-9 sm:pl-10 pr-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 bg-white/90 text-gray-800"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
                 <option key={num} value={num}>
@@ -421,7 +475,7 @@ export default function CombinedSearchForm() {
             <Building className="absolute left-3 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <select
               {...register('rooms', { valueAsNumber: true })}
-              className="w-full pl-9 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
+              className="w-full pl-9 sm:pl-10 pr-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 bg-white/90 text-gray-800"
             >
               {[1, 2, 3, 4, 5].map(num => (
                 <option key={num} value={num}>
@@ -450,10 +504,11 @@ export default function CombinedSearchForm() {
             value={activityForm.watch('destination') || ''}
             onChange={(value) => {
               activityForm.setValue('destination', value)
-              searchLocations(value)
+              searchLocations(value, 'activities')
             }}
             onLocationSelect={(location) => {
-              const locationValue = location.iataCode || location.name
+              // For activities, use city name instead of airport code
+              const locationValue = location.city || location.name
               activityForm.setValue('destination', locationValue)
             }}
             suggestions={locationSuggestions}
@@ -473,7 +528,7 @@ export default function CombinedSearchForm() {
             <Input
               type="date"
               {...register('date')}
-              className="pl-8 sm:pl-10 bg-white/90 text-gray-800"
+              className="pl-8 sm:pl-10 bg-white/90 text-gray-800 border-2 border-gray-300 focus:border-amber-500 focus:ring-2 focus:ring-amber-200"
             />
             {errors.date && (
               <p className="text-red-500 text-sm mt-1">{errors.date.message}</p>
@@ -483,7 +538,7 @@ export default function CombinedSearchForm() {
             <Users className="absolute left-2 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <select
               {...register('participants', { valueAsNumber: true })}
-              className="w-full pl-8 sm:pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
+              className="w-full pl-8 sm:pl-10 pr-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 bg-white/90 text-gray-800"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
                 <option key={num} value={num}>
@@ -501,7 +556,7 @@ export default function CombinedSearchForm() {
         <div className="relative">
           <select
             {...register('category')}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 bg-white/90 text-gray-800"
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 bg-white/90 text-gray-800"
           >
             <option value="all">All Categories</option>
             <option value="tours">Tours & Sightseeing</option>
@@ -520,13 +575,13 @@ export default function CombinedSearchForm() {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">
+    <Card className="search-form-container w-full max-w-4xl mx-auto shadow-xl hover:shadow-2xl border-0 overflow-hidden transition-all duration-300 relative z-10">
+      <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-100">
+        <CardTitle className="text-2xl font-bold text-center text-gray-800">
           Search & Book Your Perfect Trip
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Search Type Tabs */}
           <div className="flex flex-wrap border-b border-gray-200">
@@ -539,7 +594,7 @@ export default function CombinedSearchForm() {
                   onClick={() => setSearchType(tab.id as SearchType)}
                   className={`flex-1 min-w-0 py-3 px-2 sm:px-4 text-center flex items-center justify-center space-x-1 sm:space-x-2 border-b-2 font-medium transition-colors ${
                     searchType === tab.id
-                      ? 'border-blue-500 text-blue-600 bg-blue-50'
+                      ? 'border-amber-500 text-amber-600 bg-amber-50'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
@@ -561,7 +616,7 @@ export default function CombinedSearchForm() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-base sm:text-lg font-semibold"
+            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
           >
             {isLoading ? (
               <div className="flex items-center justify-center space-x-2">
