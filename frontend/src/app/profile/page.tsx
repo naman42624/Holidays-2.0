@@ -295,7 +295,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Debug Information */}
-        <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+        {/* <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
           <h3 className="text-sm font-medium text-blue-800 mb-2">Debug Information</h3>
           <div className="text-xs text-blue-700 space-y-1">
             <p><strong>User exists:</strong> {user ? 'Yes' : 'No'}</p>
@@ -304,7 +304,7 @@ export default function ProfilePage() {
             <p><strong>Form lastName:</strong> {formValues.lastName || 'empty'}</p>
             <p><strong>Form email:</strong> {formValues.email || 'empty'}</p>
           </div>
-        </div>
+        </div> */}
 
         {/* Header */}
         <div className="mb-8">
