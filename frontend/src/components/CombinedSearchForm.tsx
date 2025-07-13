@@ -47,7 +47,7 @@ const hotelSearchSchema = z.object({
   destination: z.string().min(3, 'Destination is required'),
   checkIn: z.string().min(1, 'Check-in date is required'),
   checkOut: z.string().min(1, 'Check-out date is required'),
-  guests: z.number().min(1, 'At least 1 guest required').max(10, 'Maximum 10 guests'),
+  adults: z.number().min(1, 'At least 1 guest required').max(10, 'Maximum 10 guests'),
   rooms: z.number().min(1, 'At least 1 room required').max(5, 'Maximum 5 rooms')
 }).refine((data) => {
   return new Date(data.checkOut) > new Date(data.checkIn)
@@ -92,7 +92,7 @@ export default function CombinedSearchForm() {
       destination: '',
       checkIn: format(addDays(new Date(), 1), 'yyyy-MM-dd'),
       checkOut: format(addDays(new Date(), 3), 'yyyy-MM-dd'),
-      guests: 2,
+      adults: 2, // Changed from guests to adults
       rooms: 1
     }
   })
@@ -257,7 +257,15 @@ export default function CombinedSearchForm() {
         case 'hotels':
           isValid = await hotelForm.trigger()
           if (isValid) {
-            searchData = hotelForm.getValues()
+            // Map hotel form data to match what the HotelsPage expects
+            const hotelData = hotelForm.getValues()
+            searchData = {
+              destination: hotelData.destination,
+              checkIn: hotelData.checkIn,
+              checkOut: hotelData.checkOut,
+              adults: hotelData.adults,
+              rooms: hotelData.rooms
+            }
             console.log('Hotel form data:', searchData)
           } else {
             console.log('Hotel form validation failed:', hotelForm.formState.errors)
@@ -266,7 +274,14 @@ export default function CombinedSearchForm() {
         case 'activities':
           isValid = await activityForm.trigger()
           if (isValid) {
-            searchData = activityForm.getValues()
+            // Map activity form data to match what the ActivitiesPage expects
+            const activityData = activityForm.getValues()
+            searchData = {
+              destination: activityData.destination,
+              date: activityData.date,
+              travelers: activityData.participants, // Map participants to travelers
+              category: activityData.category
+            }
             console.log('Activity form data:', searchData)
           } else {
             console.log('Activity form validation failed:', activityForm.formState.errors)
@@ -476,17 +491,17 @@ export default function CombinedSearchForm() {
           <div className="relative">
             <Users className="absolute left-3 sm:left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <select
-              {...register('guests', { valueAsNumber: true })}
+              {...register('adults', { valueAsNumber: true })}
               className="w-full pl-9 sm:pl-10 pr-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 bg-white/90 text-gray-800"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
                 <option key={num} value={num}>
-                  {num} {num === 1 ? 'Guest' : 'Guests'}
+                  {num} {num === 1 ? 'Adult' : 'Adults'}
                 </option>
               ))}
             </select>
-            {errors.guests && (
-              <p className="text-red-500 text-sm mt-1">{errors.guests.message}</p>
+            {errors.adults && (
+              <p className="text-red-500 text-sm mt-1">{errors.adults.message}</p>
             )}
           </div>
           <div className="relative">

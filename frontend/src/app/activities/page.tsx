@@ -94,7 +94,11 @@ export default function ActivitiesPage() {
         const searchData = JSON.parse(savedSearchData)
         if (searchData.destination) setValue('destination', searchData.destination)
         if (searchData.date) setValue('date', searchData.date)
-        if (searchData.participants) setValue('travelers', searchData.participants)
+        
+        // Handle both travelers and participants fields for compatibility
+        if (searchData.travelers) setValue('travelers', searchData.travelers)
+        else if (searchData.participants) setValue('travelers', searchData.participants)
+        
         if (searchData.category) setValue('category', searchData.category)
         
         sessionStorage.removeItem('activitiesSearchData')

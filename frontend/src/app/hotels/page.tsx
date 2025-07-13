@@ -120,7 +120,11 @@ export default function HotelsPage() {
         if (searchData.destination) setValue('destination', searchData.destination)
         if (searchData.checkIn) setValue('checkIn', searchData.checkIn)
         if (searchData.checkOut) setValue('checkOut', searchData.checkOut)
-        if (searchData.guests) setValue('adults', searchData.guests)
+        
+        // Handle both adults and guests fields for compatibility
+        if (searchData.adults) setValue('adults', searchData.adults)
+        else if (searchData.guests) setValue('adults', searchData.guests)
+        
         if (searchData.rooms) setValue('rooms', searchData.rooms)
         
         sessionStorage.removeItem('hotelsSearchData')
@@ -131,7 +135,7 @@ export default function HotelsPage() {
             destination: searchData.destination,
             checkIn: searchData.checkIn,
             checkOut: searchData.checkOut,
-            adults: searchData.guests || 1,
+            adults: searchData.adults || searchData.guests || 1,
             children: 0,
             rooms: searchData.rooms || 1
           })
